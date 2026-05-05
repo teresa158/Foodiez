@@ -1,0 +1,79 @@
+{
+  "orders": [
+    {
+      "id": 1,
+      "customerName": "John Doe",
+      "tableNote": "Table 4",
+      "items": [
+        { "name": "Grilled Salmon", "price": 18.99 },
+        { "name": "Sparkling Water", "price": 3.50 }
+      ],
+      "totalPrice": 25.99,
+      "status": "pending",
+      "createdAt": "2025-05-04T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "customerName": "Maria Garcia",
+      "tableNote": "Table 2",
+      "items": [
+        { "name": "Chicken Burger", "price": 14.50 },
+        { "name": "French Fries", "price": 5.99 }
+      ],
+      "totalPrice": 20.49,
+      "status": "accepted",
+      "createdAt": "2025-05-04T09:52:00.000Z"
+    },
+    {
+      "id": 3,
+      "customerName": "Alex Kim",
+      "tableNote": "Delivery",
+      "items": [
+        { "name": "Margherita Pizza", "price": 16.50 },
+        { "name": "Tiramisu", "price": 7.50 }
+      ],
+      "totalPrice": 24.00,
+      "status": "preparing",
+      "createdAt": "2025-05-04T09:45:00.000Z"
+    },
+    {
+      "id": 4,
+      "customerName": "Sara Patel",
+      "tableNote": "Table 7",
+      "items": [
+        { "name": "Caesar Salad", "price": 12.00 },
+        { "name": "Iced Tea", "price": 4.00 }
+      ],
+      "totalPrice": 16.00,
+      "status": "completed",
+      "createdAt": "2025-05-04T09:38:00.000Z"
+    },
+    {
+      "id": 5,
+      "customerName": "Tom Wilson",
+      "tableNote": "Table 1",
+      "items": [
+        { "name": "Beef Steak", "price": 28.00 }
+      ],
+      "totalPrice": 28.00,
+      "status": "rejected",
+      "createdAt": "2025-05-04T09:25:00.000Z"
+    }
+  ],
+  "menu": [
+    { "id": 1, "name": "Grilled Salmon", "price": 18.99, "emoji": "🐟" },
+    { "id": 2, "name": "Chicken Burger", "price": 14.50, "emoji": "🍔" },
+    { "id": 3, "name": "Margherita Pizza", "price": 16.50, "emoji": "🍕" },
+    { "id": 4, "name": "Caesar Salad", "price": 12.00, "emoji": "🥗" },
+    { "id": 5, "name": "Beef Steak", "price": 28.00, "emoji": "🥩" },
+    { "id": 6, "name": "Pasta Carbonara", "price": 15.00, "emoji": "🍝" },
+    { "id": 7, "name": "French Fries", "price": 5.99, "emoji": "🍟" },
+    { "id": 8, "name": "Tiramisu", "price": 7.50, "emoji": "🍮" },
+    { "id": 9, "name": "Sparkling Water", "price": 3.50, "emoji": "💧" },
+    { "id": 10, "name": "Iced Tea", "price": 4.00, "emoji": "🧋" }
+  ],
+  "settings": {
+    "restaurantName": "Foodiez",
+    "contactEmail": "contact@foodiez.com"
+  }
+}

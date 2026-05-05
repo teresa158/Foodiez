@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foodiez – Orders</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+  <div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <aside class="w-52 bg-white border-r border-gray-100 flex flex-col">
+      <div class="p-5 border-b border-gray-100">
+        <h1 class="text-orange-500 font-bold text-lg">Foodiez</h1>
+        <p class="text-xs text-gray-400">RESTAURANT ADMIN</p>
+      </div>
+      <nav class="p-3 space-y-1">
+        <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-50">Dashboard</a>
+        <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm bg-orange-50 text-orange-500 font-medium">Orders</a>
+        <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-50">New Order</a>
+        <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-50">Menu</a>
+        <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-50">Settings</a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-6">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">Orders Management</h2>
+          <p class="text-sm text-gray-400">Track and manage all incoming orders in real-time.</p>
+        </div>
+        <button class="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+          + Create Order
+        </button>
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="flex gap-4 border-b border-gray-200 mb-6">
+        <button class="pb-2 text-sm font-medium text-orange-500 border-b-2 border-orange-500">
+          All Orders <span class="bg-orange-50 text-orange-500 text-xs px-2 py-0.5 rounded-full" id="count-all">0</span>
+        </button>
+        <button class="pb-2 text-sm text-gray-400">Pending <span id="count-pending">0</span></button>
+        <button class="pb-2 text-sm text-gray-400">Accepted <span id="count-accepted">0</span></button>
+        <button class="pb-2 text-sm text-gray-400">Preparing <span id="count-preparing">0</span></button>
+        <button class="pb-2 text-sm text-gray-400">Completed <span id="count-completed">0</span></button>
+        <button class="pb-2 text-sm text-gray-400">Rejected <span id="count-rejected">0</span></button>
+      </div>
+
+      <!-- Orders grid — vide pour l'instant -->
+      <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <!-- Les cards vont apparaître ici en Jour 2 -->
+        <p class="text-gray-400 text-sm">Chargement des commandes...</p>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/orders.js"></script>
+</body>
+</html>
