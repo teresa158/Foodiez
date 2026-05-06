@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Foodiez - New Order</title>
+
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            colors: {
+              brand: {
+                DEFAULT: "#EA580C", // Tailwind orange-600 approx
+                orange: "#F97316", // Primary Orange from prompt
+                light: "#FFF7ED",
+              },
+              sidebar: "#FFFFFF",
+              bgMain: "#F9FAFB",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style data-purpose="custom-layout">
+      body {
+        background-color: #F9FAFB;
+        font-family: "Inter", sans-serif;
+      }
+      .active-nav {
+        border-right: 4px solid #F97316;
+        background-color: #FFF7ED;
+        color: #F97316;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .item-card:hover {
+        border-color: #F97316;
+        background-color: #FFF7ED;
+      }
+    </style>
+  </head>
+
+  <body class="flex h-screen overflow-hidden">
+    <!-- BEGIN: Sidebar -->
+    <aside
+      class="w-64 bg-white border-r border-gray-200 flex flex-col shrink-0"
+      data-purpose="main-sidebar"
+    >
+      <!-- Logo -->
+      <div class="p-6 flex items-center gap-2">
+        <div
+          class="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center"
+        >
+          <svg
+            class="h-5 w-5 text-white"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewbox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+            <path d="M7 2v20"></path>
+            <path
+              d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-gray-800 leading-none">Foodiez</h1>
+          <span
+            class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold"
+            >Restaurant Admin</span
+          >
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 px-3 mt-4 space-y-1 overflow-y-auto scrollbar-hide">
+        <a
+          class="flex items-center gap-3 px-3 py-2.5 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors"
+          href="#"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          <span class="font-medium">Dashboard</span>
+        </a>
+
+        <a
+          class="flex items-center gap-3 px-3 py-2.5 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors"
+          href="#"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          <span class="font-medium">Orders</span>
+        </a>
+
+        <!-- Active Link -->
+        <a
+          class="flex items-center gap-3 px-3 py-2.5 active-nav rounded-l-lg transition-colors"
+          href="#"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          <span class="font-medium">New Order</span>
+        </a>
+
+        <a
+          class="flex items-center gap-3 px-3 py-2.5 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors"
+          href="#"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          <span class="font-medium">Menu</span>
+        </a>
+
+        <a
+          class="flex items-center gap-3 px-3 py-2.5 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors"
+          href="#"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+            <path
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          <span class="font-medium">Settings</span>
+        </a>
+      </nav>
+
+      <!-- Footer Sidebar Cards -->
+      <div class="p-4 space-y-4">
+        <!-- Upgrade Card -->
+        <div
+          class="bg-orange-50 border border-orange-100 rounded-xl p-4"
+          data-purpose="upgrade-card"
+        >
+          <p class="text-xs font-bold text-gray-800 uppercase mb-1">Pro Plan</p>
+          <p class="text-[11px] text-gray-500 mb-3 leading-tight">
+            Manage up to 5 locations seamlessly.
+          </p>
+          <button
+            class="w-full bg-brand-orange text-white text-xs font-bold py-2 rounded-lg hover:bg-orange-600 transition-colors"
+          >
+            Upgrade Now
+          </button>
+        </div>
+
+        <!-- User Profile -->
+        <div
+          class="flex items-center gap-3 p-2 bg-gray-50 rounded-xl border border-gray-100"
+          data-purpose="user-footer"
+        >
+          <div
+            class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-brand-orange font-bold text-sm"
+          >
+            CJ
+          </div>
+          <div class="overflow-hidden">
+            <p class="text-sm font-semibold text-gray-800 truncate">
+              Chef Julian
+            </p>
+            <p class="text-[10px] text-gray-400">Store Manager</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <!-- END: Sidebar -->
+
+    <!-- Main Content Wrapper -->
+    <main class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+      <!-- BEGIN: Top Header -->
+      <header
+        class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-8 shrink-0"
+        data-purpose="top-nav"
+      >
+        <div class="flex-1 max-w-md relative">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+          >
+            <svg
+              class="h-4 w-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
+            >
+              <path
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+          <input
+            class="block w-full pl-10 pr-3 py-2 border-none bg-gray-100 rounded-lg text-sm focus:ring-brand-orange focus:ring-1 transition-all"
+            placeholder="Search orders, customers..."
+            type="text"
+          />
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button class="p-2 text-gray-400 hover:text-gray-600 relative">
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
+            >
+              <path
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+            <span
+              class="absolute top-2 right-2 w-2 h-2 bg-brand-orange rounded-full border-2 border-white"
+            ></span>
+          </button>
+
+          <div
+            class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-brand-orange font-bold text-xs"
+          >
+            CJ
+          </div>
+        </div>
+      </header>
+      <!-- END: Top Header -->
+
+      <!-- BEGIN: Page Content -->
+      <div
+        class="flex-1 p-8 overflow-y-auto scrollbar-hide flex gap-8"
+        data-purpose="content-grid"
+      >
+        <!-- Column Left: Select Items -->
+        <div class="flex-1 min-w-0" data-purpose="item-selection">
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">New Order</h2>
+            <p class="text-sm text-gray-500">
+              Build and place a new customer order.
+            </p>
+          </div>
+
+          <div
+            class="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-6"
+          >
+            <h3 class="font-semibold text-gray-800">Select Items</h3>
+
+            <!-- Search for Menu -->
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
+              >
+                <svg
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewbox="0 0 24 24"
+                >
+                  <path
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  ></path>
+                </svg>
+              </div>
+              <input
+                class="block w-full pl-10 pr-4 py-2.5 border-gray-100 bg-gray-50 rounded-xl text-sm focus:ring-brand-orange"
+                placeholder="Search menu items..."
+                type="text"
+              />
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Item 1 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🐟
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">Grilled Salmon</p>
+                  <p class="text-xs text-gray-400">Mains</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">
+                    $18.99
+                  </p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 2 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-yellow-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🍔
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">Chicken Burger</p>
+                  <p class="text-xs text-gray-400">Mains</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">
+                    $14.50
+                  </p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 3 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🍕
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">
+                    Margherita Pizza
+                  </p>
+                  <p class="text-xs text-gray-400">Mains</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">
+                    $16.50
+                  </p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 4 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🥗
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">Caesar Salad</p>
+                  <p class="text-xs text-gray-400">Starters</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">
+                    $12.00
+                  </p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 5 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-pink-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🥩
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">Beef Steak</p>
+                  <p class="text-xs text-gray-400">Mains</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">
+                    $28.00
+                  </p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 6 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🍝
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">Pasta Carbonara</p>
+                  <p class="text-xs text-gray-400">Mains</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">
+                    $15.00
+                  </p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 7 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-yellow-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🍟
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">French Fries</p>
+                  <p class="text-xs text-gray-400">Starters</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">$5.99</p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 8 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🍰
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">Tiramisu</p>
+                  <p class="text-xs text-gray-400">Desserts</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">$7.50</p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 9 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-cyan-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  💧
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">Sparkling Water</p>
+                  <p class="text-xs text-gray-400">Drinks</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">$3.50</p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 10 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🍵
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">Iced Tea</p>
+                  <p class="text-xs text-gray-400">Drinks</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">$4.00</p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 11 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-yellow-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🍋
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">Lemonade</p>
+                  <p class="text-xs text-gray-400">Drinks</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">$4.50</p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Item 12 -->
+              <button
+                class="item-card flex items-center gap-4 p-4 border border-gray-100 rounded-xl text-left transition-all group"
+              >
+                <div
+                  class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center text-2xl"
+                >
+                  🌯
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-bold text-gray-800">Veggie Wrap</p>
+                  <p class="text-xs text-gray-400">Starters</p>
+                  <p class="text-sm font-bold text-brand-orange mt-1">$11.50</p>
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-gray-100 group-hover:bg-brand-orange flex items-center justify-center text-gray-400 group-hover:text-white transition-colors"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 4v16m8-8H4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column Right: Order Summary -->
+        <div class="w-[380px] shrink-0" data-purpose="order-summary-sidebar">
+          <div
+            class="bg-white rounded-2xl border border-gray-200 p-6 h-full flex flex-col"
+          >
+            <h3 class="font-bold text-gray-800 mb-6">Order Summary</h3>
+
+            <!-- Form Fields -->
+            <div class="space-y-4 mb-6">
+              <div>
+                <label
+                  class="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 tracking-wider"
+                  >Customer Name</label
+                >
+                <input
+                  class="w-full text-sm border-gray-200 rounded-xl focus:ring-brand-orange focus:border-brand-orange px-4 py-2.5"
+                  placeholder="Enter customer name"
+                  type="text"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 tracking-wider"
+                  >Table / Note</label
+                >
+                <input
+                  class="w-full text-sm border-gray-200 rounded-xl focus:ring-brand-orange focus:border-brand-orange px-4 py-2.5"
+                  placeholder="Table 4 / Delivery..."
+                  type="text"
+                />
+              </div>
+            </div>
+
+            <!-- Empty State Item Area -->
+            <div
+              class="flex-1 flex flex-col items-center justify-center text-center border-y border-dashed border-gray-100 my-4 py-12"
+            >
+              <p class="text-sm text-gray-300">No items selected yet.</p>
+            </div>
+
+            <!-- Calculation -->
+            <div class="space-y-2 mb-8">
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-400">Subtotal</span>
+                <span class="text-gray-400 font-semibold">$0.00</span>
+              </div>
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-400">Tax (10%)</span>
+                <span class="text-gray-400 font-semibold">$0.00</span>
+              </div>
+              <div
+                class="flex justify-between items-center pt-2 border-t border-gray-50"
+              >
+                <span class="font-bold text-gray-800">Total</span>
+                <span class="text-xl font-bold text-gray-900">$0.00</span>
+              </div>
+            </div>
+
+            <!-- Place Order Button -->
+            <button
+              class="w-full bg-brand-orange text-white font-bold py-4 rounded-xl shadow-lg shadow-orange-200 hover:bg-orange-600 transition-all active:scale-[0.98]"
+            >
+              Place Order
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Page Content -->
+    </main>
+  </body>
+</html>

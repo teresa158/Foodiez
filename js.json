@@ -1,0 +1,109 @@
+{
+  "orders": [
+    {
+      "id": "FDEZ-9021",
+      "customer": "John Doe",
+      "status": "Pending",
+      "time": "2 min ago",
+      "notes": "Table 4",
+      "items": [
+        { "name": "Grilled Salmon", "qty": 1, "price": 18.99 },
+        { "name": "Sparkling Water", "qty": 2, "price": 3.50 }
+      ]
+    },
+    {
+      "id": "FDEZ-9022",
+      "customer": "Maria Garcia",
+      "status": "Accepted",
+      "time": "8 min ago",
+      "notes": "Table 2",
+      "items": [
+        { "name": "Chicken Burger", "qty": 2, "price": 14.50 },
+        { "name": "French Fries", "qty": 1, "price": 5.99 }
+      ]
+    },
+    {
+      "id": "FDEZ-9023",
+      "customer": "Alex Kim",
+      "status": "Preparing",
+      "time": "15 min ago",
+      "notes": "Delivery",
+      "items": [
+        { "name": "Margherita Pizza", "qty": 1, "price": 16.50 },
+        { "name": "Tiramisu", "qty": 2, "price": 7.50 }
+      ]
+    },
+    {
+      "id": "FDEZ-9024",
+      "customer": "Sara Patel",
+      "status": "Completed",
+      "time": "22 min ago",
+      "notes": "Table 7",
+      "items": [
+        { "name": "Caesar Salad", "qty": 1, "price": 12.00 },
+        { "name": "Iced Tea", "qty": 2, "price": 4.00 }
+      ]
+    },
+    {
+      "id": "FDEZ-9025",
+      "customer": "Tom Wilson",
+      "status": "Rejected",
+      "time": "35 min ago",
+      "notes": "Table 1",
+      "items": [
+        { "name": "Beef Steak", "qty": 1, "price": 28.00 }
+      ]
+    },
+    {
+      "id": "FDEZ-9026",
+      "customer": "Emma Brown",
+      "status": "Pending",
+      "time": "1 min ago",
+      "notes": "Table 9",
+      "items": [
+        { "name": "Veggie Wrap", "qty": 2, "price": 11.50 },
+        { "name": "Lemonade", "qty": 2, "price": 4.50 }
+      ]
+    },
+    {
+      "id": "FDEZ-9027",
+      "customer": "James Lee",
+      "status": "Accepted",
+      "time": "5 min ago",
+      "notes": "Table 3",
+      "items": [
+        { "name": "Pasta Carbonara", "qty": 1, "price": 15.00 },
+        { "name": "Garlic Bread", "qty": 1, "price": 4.00 }
+      ]
+    },
+    {
+      "id": "FDEZ-9028",
+      "customer": "Olivia Chen",
+      "status": "Preparing",
+      "time": "12 min ago",
+      "notes": "Table 5",
+      "items": [
+        { "name": "Sushi Platter", "qty": 1, "price": 32.00 },
+        { "name": "Miso Soup", "qty": 1, "price": 5.00 }
+      ]
+    }
+  ],
+  "menuItems": [
+    { "id": 1,  "name": "Grilled Salmon",    "category": "Mains",    "price": 18.99, "desc": "Fresh Atlantic salmon with herbs",      "available": true, "emoji": "🐟" },
+    { "id": 2,  "name": "Chicken Burger",    "category": "Mains",    "price": 14.50, "desc": "Crispy fried chicken with lettuce",      "available": true, "emoji": "🍔" },
+    { "id": 3,  "name": "Margherita Pizza",  "category": "Mains",    "price": 16.50, "desc": "Classic tomato and mozzarella",          "available": true, "emoji": "🍕" },
+    { "id": 4,  "name": "Caesar Salad",      "category": "Starters", "price": 12.00, "desc": "Romaine, croutons, parmesan",            "available": true, "emoji": "🥗" },
+    { "id": 5,  "name": "Beef Steak",        "category": "Mains",    "price": 28.00, "desc": "8oz ribeye, medium-rare",               "available": true, "emoji": "🥩" },
+    { "id": 6,  "name": "Pasta Carbonara",   "category": "Mains",    "price": 15.00, "desc": "Spaghetti, eggs, guanciale",            "available": true, "emoji": "🍝" },
+    { "id": 7,  "name": "French Fries",      "category": "Starters", "price": 5.99,  "desc": "Golden crispy fries",                   "available": true, "emoji": "🍟" },
+    { "id": 8,  "name": "Tiramisu",          "category": "Desserts", "price": 7.50,  "desc": "Classic Italian dessert",               "available": true, "emoji": "🎂" },
+    { "id": 9,  "name": "Sparkling Water",   "category": "Drinks",   "price": 3.50,  "desc": "San Pellegrino 500ml",                  "available": true, "emoji": "💧" },
+    { "id": 10, "name": "Iced Tea",          "category": "Drinks",   "price": 4.00,  "desc": "Fresh brewed with lemon",               "available": true, "emoji": "🍵" },
+    { "id": 11, "name": "Lemonade",          "category": "Drinks",   "price": 4.50,  "desc": "Fresh-squeezed lemonade",               "available": true, "emoji": "🍋" },
+    { "id": 12, "name": "Veggie Wrap",       "category": "Starters", "price": 11.50, "desc": "Mixed veggies, hummus, tortilla",       "available": true, "emoji": "🌯" },
+    { "id": 13, "name": "Sushi Platter",     "category": "Mains",    "price": 32.00, "desc": "16-piece assorted sushi",               "available": true, "emoji": "🍱" },
+    { "id": 14, "name": "Garlic Bread",      "category": "Starters", "price": 4.00,  "desc": "Toasted with garlic butter",            "available": true, "emoji": "🥖" },
+    { "id": 15, "name": "Miso Soup",         "category": "Starters", "price": 5.00,  "desc": "Traditional Japanese style",            "available": true, "emoji": "🍲" },
+    { "id": 16, "name": "Cheesecake",        "category": "Desserts", "price": 8.50,  "desc": "New York style with berry sauce",       "available": true, "emoji": "🍰" }
+  ]
+}
