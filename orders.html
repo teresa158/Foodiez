@@ -5,6 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Foodiez – Orders</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* ── Cards ── */
+    .order-card { background:#fff; border:1px solid #f1f5f9; border-radius:12px; padding:18px; }
+    .card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+    .card-info { display:flex; align-items:center; gap:10px; }
+    .avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+    .customer-name { font-size:14px; font-weight:600; color:#111827; }
+    .order-id { font-size:11px; color:#9ca3af; }
+    .table-note { font-size:12px; color:#6b7280; margin-bottom:4px; }
+    .items-list { font-size:13px; color:#374151; margin-bottom:10px; }
+    .card-footer { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .time-ago { font-size:12px; color:#9ca3af; }
+    .total-price { font-size:15px; font-weight:700; color:#111827; }
+    .card-actions { display:flex; gap:8px; }
+    .btn-edit { padding:6px 14px; border-radius:8px; border:1px solid #e5e7eb; background:#fff; color:#374151; font-size:12px; cursor:pointer; }
+    .btn-action { padding:6px 14px; border-radius:8px; background:#f97316; color:#fff; border:none; font-size:12px; cursor:pointer; flex:1; }
+    .btn-delete { padding:6px 10px; border-radius:8px; border:1px solid #fee2e2; background:#fff; color:#ef4444; font-size:13px; cursor:pointer; }
+
+    /* ── Badges ── */
+    .badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; text-transform:uppercase; }
+    .badge-pending   { background:#eff6ff; color:#2563eb; }
+    .badge-accepted  { background:#f0fdf4; color:#16a34a; }
+    .badge-preparing { background:#fff7ed; color:#ea580c; }
+    .badge-completed { background:#f0fdf4; color:#15803d; }
+    .badge-rejected  { background:#fef2f2; color:#dc2626; }
+
+    /* ── Filter tabs ── */
+    .filter-tab { padding:8px 4px; font-size:13px; color:#6b7280; border-bottom:2px solid transparent; cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; }
+    .filter-tab.active { color:#f97316; border-bottom-color:#f97316; font-weight:600; }
+
+    /* ── Skeleton ── */
+    .skeleton-card { background:#fff; border:1px solid #f1f5f9; border-radius:12px; padding:18px; display:flex; flex-direction:column; gap:10px; }
+    .skeleton { height:14px; border-radius:6px; background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; }
+    .skeleton.short { width:60%; }
+    .skeleton.long  { width:100%; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ── Empty / Error ── */
+    .empty-state, .error-state { grid-column:1/-1; text-align:center; padding:60px 20px; color:#6b7280; }
+    .empty-state p, .error-state p { font-size:16px; font-weight:600; margin-bottom:8px; }
+    .error-state button { margin-top:12px; padding:8px 20px; background:#f97316; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:13px; }
+  </style>
 </head>
 <body class="bg-gray-50">
 
@@ -40,22 +82,29 @@
       </div>
 
       <!-- Filter tabs -->
-      <div class="flex gap-4 border-b border-gray-200 mb-6">
-        <button class="pb-2 text-sm font-medium text-orange-500 border-b-2 border-orange-500">
-          All Orders <span class="bg-orange-50 text-orange-500 text-xs px-2 py-0.5 rounded-full" id="count-all">0</span>
+      <div class="flex gap-6 border-b border-gray-200 mb-6">
+        <button class="filter-tab active" data-filter="all">
+          All Orders <span id="count-all">0</span>
         </button>
-        <button class="pb-2 text-sm text-gray-400">Pending <span id="count-pending">0</span></button>
-        <button class="pb-2 text-sm text-gray-400">Accepted <span id="count-accepted">0</span></button>
-        <button class="pb-2 text-sm text-gray-400">Preparing <span id="count-preparing">0</span></button>
-        <button class="pb-2 text-sm text-gray-400">Completed <span id="count-completed">0</span></button>
-        <button class="pb-2 text-sm text-gray-400">Rejected <span id="count-rejected">0</span></button>
+        <button class="filter-tab" data-filter="pending">
+          Pending <span id="count-pending">0</span>
+        </button>
+        <button class="filter-tab" data-filter="accepted">
+          Accepted <span id="count-accepted">0</span>
+        </button>
+        <button class="filter-tab" data-filter="preparing">
+          Preparing <span id="count-preparing">0</span>
+        </button>
+        <button class="filter-tab" data-filter="completed">
+          Completed <span id="count-completed">0</span>
+        </button>
+        <button class="filter-tab" data-filter="rejected">
+          Rejected <span id="count-rejected">0</span>
+        </button>
       </div>
 
-      <!-- Orders grid — vide pour l'instant -->
-      <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <!-- Les cards vont apparaître ici en Jour 2 -->
-        <p class="text-gray-400 text-sm">Chargement des commandes...</p>
-      </div>
+      <!-- Orders grid -->
+      <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
 
     </main>
   </div>
