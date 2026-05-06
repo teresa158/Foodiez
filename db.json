@@ -1,0 +1,141 @@
+{
+  "orders": [
+    {
+      "id": "1",
+      "customerName": "Ahmed",
+      "items": [
+        "Pizza Margherita",
+        "Soda"
+      ],
+      "totalPrice": 120,
+      "status": "pending",
+      "createdAt": "2025-05-04"
+    },
+    {
+      "id": "2",
+      "customerName": "Fatima",
+      "items": [
+        "Burger",
+        "Fries",
+        "Juice"
+      ],
+      "totalPrice": 95,
+      "status": "accepted",
+      "createdAt": "2025-05-04"
+    },
+    {
+      "id": "3",
+      "customerName": "Youssef",
+      "items": [
+        "Pasta Carbonara",
+        "Salad",
+        "Water"
+      ],
+      "totalPrice": 150,
+      "status": "completed",
+      "createdAt": "2025-05-03"
+    },
+    {
+      "id": "4",
+      "customerName": "Sara",
+      "items": [
+        "Tacos",
+        "Nachos"
+      ],
+      "totalPrice": 80,
+      "status": "rejected",
+      "createdAt": "2025-05-03"
+    },
+    {
+      "id": "5",
+      "customerName": "Omar",
+      "items": [
+        "Sushi Platter",
+        "Miso Soup",
+        "Green Tea"
+      ],
+      "totalPrice": 220,
+      "status": "completed",
+      "createdAt": "2025-05-02"
+    },
+    {
+      "id": "6",
+      "customerName": "Khadija",
+      "items": [
+        "Caesar Salad",
+        "Lemonade"
+      ],
+      "totalPrice": 75,
+      "status": "pending",
+      "createdAt": "2025-05-04"
+    },
+    {
+      "id": "7",
+      "customerName": "Hassan",
+      "items": [
+        "Steak",
+        "Mashed Potatoes",
+        "Red Wine"
+      ],
+      "totalPrice": 310,
+      "status": "accepted",
+      "createdAt": "2025-05-04"
+    },
+    {
+      "id": "8",
+      "customerName": "Amina",
+      "items": [
+        "Chicken Wrap",
+        "Smoothie"
+      ],
+      "totalPrice": 90,
+      "status": "pending",
+      "createdAt": "2025-05-05"
+    },
+    {
+      "id": "9",
+      "customerName": "Rachid",
+      "items": [
+        "Fish & Chips",
+        "Cola"
+      ],
+      "totalPrice": 110,
+      "status": "completed",
+      "createdAt": "2025-05-01"
+    },
+    {
+      "id": "10",
+      "customerName": "Nadia",
+      "items": [
+        "Veggie Burger",
+        "Sweet Potato Fries",
+        "Iced Tea"
+      ],
+      "totalPrice": 105,
+      "status": "rejected",
+      "createdAt": "2025-05-02"
+    }
+  ],
+  "settings": {
+    "restaurantName": "Foodiez Restaurant",
+    "phoneNumber": "+1 (555) 123-4567",
+    "address": "123 Main Street, Food City, FC 10001",
+    "openingTime": "00:00",
+    "closingTime": "22:00",
+    "contactEmail": "contact@foodiez.com",
+    "notifications": {
+      "newOrderAlerts": true,
+      "orderStatusUpdates": true,
+      "dailySummaryReports": true,
+      "lowStockAlerts": true
+    },
+    "manager": {
+      "fullName": "nada",
+      "email": "julian@foodiez.com",
+      "role": "Store Manager"
+    },
+    "managerName": "Chef nada",
+    "managerRole": "Store Manager"
+  },
+  "$schema": "./node_modules/json-server/schema.json"
+}
