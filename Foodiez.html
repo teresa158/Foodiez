@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Foodiez — Menu Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+ 
+<!-- ============================================================
+     CSS — Menu Management
+     ============================================================ -->
+<style>
+  /* ---- Reset & Base ---- */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f9f9ff;
+    color: #151c27;
+    min-height: 100vh;
+  }
+ 
+  /* ---- Material Icons ---- */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+    font-size: 20px;
+  }
+ 
+  /* ---- Layout ---- */
+  #sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 220px;
+    height: 100%;
+    background: #f9fafb;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    z-index: 50;
+  }
+ 
+  #topbar {
+    position: fixed;
+    top: 0; left: 220px; right: 0;
+    height: 60px;
+    background: #fff;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 40;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+ 
+  #main {
+    margin-left: 220px;
+    margin-top: 60px;
+    padding: 28px;
+  }
+ 
+  /* ---- Sidebar brand ---- */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 0 4px;
+  }
+  .brand-icon {
+    width: 38px; height: 38px;
+    background: #f97316;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-icon span { color: #fff; font-size: 18px; }
+  .brand-name { font-size: 18px; font-weight: 800; color: #ea580c; }
+  .brand-sub { font-size: 10px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: .06em; }
+ 
+  /* ---- Nav links ---- */
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px 0 0 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #6b7280;
+    text-decoration: none;
+    transition: background .15s, color .15s;
+    border-right: 3px solid transparent;
+    margin-right: -16px;
+    cursor: pointer;
+  }
+  .nav-link:hover { background: #f3f4f6; color: #111827; }
+  .nav-link.active { background: #fff7ed; color: #ea580c; border-right-color: #ea580c; }
+ 
+  /* ---- Pro Plan banner ---- */
+  .pro-banner {
+    margin-top: auto;
+    margin-bottom: 12px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .pro-banner h4 { font-size: 11px; font-weight: 700; color: #9a3412; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+  .pro-banner p { font-size: 11px; color: #c2410c; margin-bottom: 10px; }
+  .pro-btn {
+    width: 100%;
+    padding: 8px;
+    background: #ea580c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .pro-btn:hover { background: #c2410c; }
+ 
+  /* ---- User card (bottom) ---- */
+  .user-card {
+    background: #fff;
+    border: 1px solid #f3f4f6;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #ffedd5;
+    color: #ea580c;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .user-card .name { font-size: 13px; font-weight: 700; color: #111827; }
+  .user-card .role { font-size: 11px; color: #9ca3af; }
+ 
+  /* ---- Topbar ---- */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f9fafb;
+    border: 1px solid #f3f4f6;
+    border-radius: 10px;
+    padding: 7px 12px;
+    width: 280px;
+  }
+  .search-bar input {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    color: #374151;
+    outline: none;
+    width: 100%;
+  }
+  .search-bar input::placeholder { color: #9ca3af; }
+  .search-bar .material-symbols-outlined { font-size: 17px; color: #9ca3af; }
+ 
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .notif-btn {
+    position: relative;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #6b7280;
+  }
+  .notif-btn:hover { background: #f9fafb; }
+  .notif-dot {
+    position: absolute;
+    top: 7px; right: 7px;
+    width: 7px; height: 7px;
+    background: #ea580c;
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
+  .topbar-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #ffedd5;
+    color: #c2410c;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+ 
+  /* ---- Page header ---- */
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .page-title { font-size: 22px; font-weight: 800; color: #111827; }
+  .page-subtitle { font-size: 13px; color: #6b7280; margin-top: 3px; }
+ 
+  /* ---- Buttons ---- */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: #ea580c;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
+  }
+  .btn-primary:hover { background: #c2410c; }
+  .btn-primary .material-symbols-outlined { font-size: 17px; }
+ 
+  /* ---- Toolbar (search + filter) ---- */
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .toolbar-search {
+    position: relative;
+    flex: 1;
+    max-width: 320px;
+  }
+  .toolbar-search .material-symbols-outlined {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 17px;
+    color: #9ca3af;
+  }
+  .toolbar-search input {
+    width: 100%;
+    padding: 9px 12px 9px 36px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 13px;
+    background: #fff;
+    color: #111827;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .toolbar-search input:focus {
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+  }
+  .toolbar-search input::placeholder { color: #9ca3af; }
+ 
+  .category-select {
+    padding: 9px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    background: #fff;
+    color: #374151;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .category-select:focus { border-color: #f97316; }
+ 
+  /* ---- Table card ---- */
+  .table-card {
+    background: #fff;
+    border: 1px solid #f3f4f6;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+ 
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead tr { background: rgba(249,250,251,.6); border-bottom: 1px solid #f3f4f6; }
+  thead th {
+    padding: 14px 20px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  thead th:first-child { text-align: left; }
+  thead th.center { text-align: center; }
+  thead th.right { text-align: right; }
+ 
+  tbody tr { border-bottom: 1px solid rgba(243,244,246,.7); transition: background .12s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafafa; }
+  tbody td { padding: 14px 20px; vertical-align: middle; }
+ 
+  /* ---- Item cell ---- */
+  .item-cell { display: flex; align-items: center; gap: 12px; }
+  .item-emoji { font-size: 22px; line-height: 1; }
+  .item-name { font-weight: 600; color: #111827; font-size: 13.5px; }
+  .item-desc { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+ 
+  /* ---- Category badge ---- */
+  .badge-cat {
+    display: inline-block;
+    padding: 3px 10px;
+    background: #f3f4f6;
+    color: #4b5563;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+ 
+  /* ---- Price ---- */
+  .price { font-weight: 700; color: #111827; text-align: right; }
+ 
+  /* ---- Toggle switch ---- */
+  .toggle-wrap { display: flex; justify-content: center; }
+  .toggle {
+    position: relative;
+    width: 36px; height: 20px;
+    cursor: pointer;
+    display: inline-block;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #d1d5db;
+    border-radius: 20px;
+    transition: background .2s;
+  }
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    left: 3px; top: 3px;
+    width: 14px; height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform .2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  }
+  .toggle input:checked + .toggle-slider { background: #f97316; }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+ 
+  /* ---- Action buttons ---- */
+  .actions-cell { display: flex; justify-content: flex-end; gap: 6px; }
+  .icon-btn {
+    width: 32px; height: 32px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .12s, color .12s;
+    background: transparent;
+    color: #9ca3af;
+  }
+  .icon-btn .material-symbols-outlined { font-size: 17px; }
+  .icon-btn.edit:hover { background: #fff7ed; color: #ea580c; }
+  .icon-btn.del:hover { background: #fef2f2; color: #dc2626; }
+ 
+  /* ---- Empty state ---- */
+  #menu-empty {
+    display: none;
+    text-align: center;
+    padding: 52px 20px;
+    color: #9ca3af;
+    font-size: 13.5px;
+  }
+ 
+  /* ---- Modal backdrop ---- */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.42);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-bg.open { display: flex; }
+ 
+  /* ---- Modal box ---- */
+  .modal-box {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.18);
+    overflow: hidden;
+    animation: slideUp .25s ease;
+  }
+  @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+ 
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .modal-header h3 { font-size: 16px; font-weight: 700; color: #111827; }
+  .modal-close {
+    width: 30px; height: 30px;
+    border: none; background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #9ca3af;
+  }
+  .modal-close:hover { background: #f3f4f6; color: #374151; }
+ 
+  .modal-body { padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+ 
+  /* ---- Form fields ---- */
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 9px 13px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-family: 'Inter', sans-serif;
+    color: #111827;
+    background: #fff;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+  }
+  .field textarea { resize: none; }
+  .field input::placeholder,
+  .field textarea::placeholder { color: #9ca3af; }
+ 
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+ 
+  .available-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 13.5px;
+    color: #374151;
+    font-weight: 500;
+  }
+  .available-check input[type="checkbox"] {
+    width: 17px; height: 17px;
+    accent-color: #f97316;
+    cursor: pointer;
+  }
+ 
+  .modal-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 0 22px 22px;
+  }
+  .btn-cancel {
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .btn-cancel:hover { background: #f9fafb; }
+  .btn-save {
+    padding: 10px;
+    background: #ea580c;
+    border: none;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .btn-save:hover { background: #c2410c; }
+ 
+  /* ---- Delete modal ---- */
+  .delete-icon-wrap {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: #fef2f2;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px;
+  }
+  .delete-icon-wrap .material-symbols-outlined { font-size: 26px; color: #dc2626; }
+  .delete-modal-box { text-align: center; padding: 28px 22px 22px; }
+  .delete-modal-box h3 { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+  .delete-modal-box p { font-size: 13px; color: #6b7280; margin-bottom: 22px; }
+  .delete-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn-delete {
+    padding: 10px;
+    background: #dc2626;
+    border: none;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .btn-delete:hover { background: #b91c1c; }
+ 
+  /* ---- Toast ---- */
+  #toast-container {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+  }
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #fff;
+    background: #1f2937;
+    animation: slideInToast .3s ease;
+    pointer-events: auto;
+    min-width: 240px;
+  }
+  .toast.success { background: #059669; }
+  .toast.error { background: #dc2626; }
+  @keyframes slideInToast { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+</style>
+</head>
+<body>
+ 
+<!-- ============================================================
+     SIDEBAR
+     ============================================================ -->
+<aside id="sidebar">
+  <div class="brand">
+    <div class="brand-icon">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;font-size:20px;">restaurant</span>
+    </div>
+    <div>
+      <div class="brand-name">Foodiez</div>
+      <div class="brand-sub">Restaurant Admin</div>
+    </div>
+  </div>
+ 
+  <nav style="display:flex;flex-direction:column;gap:2px;">
+    <a class="nav-link" href="#">
+      <span class="material-symbols-outlined">dashboard</span> Dashboard
+    </a>
+    <a class="nav-link" href="#">
+      <span class="material-symbols-outlined">receipt_long</span> Orders
+    </a>
+    <a class="nav-link" href="#">
+      <span class="material-symbols-outlined">add_shopping_cart</span> New Order
+    </a>
+    <a class="nav-link active" href="#">
+      <span class="material-symbols-outlined">menu_book</span> Menu
+    </a>
+    <a class="nav-link" href="#">
+      <span class="material-symbols-outlined">settings</span> Settings
+    </a>
+  </nav>
+ 
+  <div class="pro-banner">
+    <h4>Pro Plan</h4>
+    <p>Manage up to 5 locations seamlessly.</p>
+    <button class="pro-btn">Upgrade Now</button>
+  </div>
+ 
+  <div class="user-card">
+    <div class="avatar">CJ</div>
+    <div>
+      <div class="name">Chef Julian</div>
+      <div class="role">Store Manager</div>
+    </div>
+  </div>
+</aside>
+ 
+<!-- ============================================================
+     TOPBAR
+     ============================================================ -->
+<header id="topbar">
+  <div class="search-bar">
+    <span class="material-symbols-outlined">search</span>
+    <input id="global-search" placeholder="Search orders, customers..." type="text" oninput="renderMenuTable(this.value)"/>
+  </div>
+  <div class="topbar-right">
+    <button class="notif-btn">
+      <span class="material-symbols-outlined">notifications</span>
+      <span class="notif-dot"></span>
+    </button>
+    <div class="topbar-avatar">CJ</div>
+  </div>
+</header>
+ 
+<!-- ============================================================
+     MAIN — Menu Management
+     ============================================================ -->
+<main id="main">
+ 
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Menu Management</h1>
+      <p class="page-subtitle">Add, edit, or remove menu items and categories.</p>
+    </div>
+    <button class="btn-primary" onclick="openMenuModal()">
+      <span class="material-symbols-outlined">add</span> Add Item
+    </button>
+  </div>
+ 
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-search">
+      <span class="material-symbols-outlined">search</span>
+      <input id="table-search" placeholder="Search menu items..." type="text" oninput="renderMenuTable(this.value)"/>
+    </div>
+    <select id="cat-filter" class="category-select" onchange="renderMenuTable()">
+      <option value="">All Categories</option>
+      <option>Starters</option>
+      <option>Mains</option>
+      <option>Desserts</option>
+      <option>Drinks</option>
+    </select>
+  </div>
+ 
+  <!-- Table -->
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align:left;">Item</th>
+          <th style="text-align:left;">Category</th>
+          <th class="right">Price</th>
+          <th class="center">Available</th>
+          <th class="right">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="menu-tbody"></tbody>
+    </table>
+    <div id="menu-empty">No menu items found.</div>
+  </div>
+ 
+</main>
+ 
+<!-- ============================================================
+     MODAL — Add / Edit Item
+     ============================================================ -->
+<div id="item-modal" class="modal-bg" onclick="handleBackdropClick(event,'item-modal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modal-title">Add Menu Item</h3>
+      <button class="modal-close" onclick="closeMenuModal()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id"/>
+      <div class="field">
+        <label>Item Name *</label>
+        <input id="f-name" placeholder="ex: Grilled Salmon" type="text"/>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Category</label>
+          <select id="f-category">
+            <option>Starters</option>
+            <option>Mains</option>
+            <option>Desserts</option>
+            <option>Drinks</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Price ($) *</label>
+          <input id="f-price" placeholder="0.00" type="number" min="0" step="0.01"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea id="f-desc" rows="2" placeholder="Brève description..."></textarea>
+      </div>
+      <label class="available-check">
+        <input type="checkbox" id="f-available" checked/>
+        Available on menu
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeMenuModal()">Cancel</button>
+      <button class="btn-save" onclick="saveItem()">Save Item</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- ============================================================
+     MODAL — Delete Confirm
+     ============================================================ -->
+<div id="delete-modal" class="modal-bg" onclick="handleBackdropClick(event,'delete-modal')">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:360px;">
+    <div class="delete-modal-box">
+      <div class="delete-icon-wrap">
+        <span class="material-symbols-outlined">delete_forever</span>
+      </div>
+      <h3>Confirm Delete</h3>
+      <p id="delete-msg">Are you sure? This action cannot be undone.</p>
+      <div class="delete-footer">
+        <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn-delete" id="delete-confirm-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<!-- Toast container -->
+<div id="toast-container"></div>
+ 
+<!-- ============================================================
+     JAVASCRIPT — Menu Management
+     ============================================================ -->
+<script>
+/* ---- Data ---- */
+let menuItems = [
+  { id:1,  name:'Grilled Salmon',    category:'Mains',    price:18.99, desc:'Fresh Atlantic salmon with herbs',      available:true,  emoji:'🐟' },
+  { id:2,  name:'Chicken Burger',    category:'Mains',    price:14.50, desc:'Crispy fried chicken with lettuce',    available:true,  emoji:'🍔' },
+  { id:3,  name:'Margherita Pizza',  category:'Mains',    price:16.50, desc:'Classic tomato and mozzarella',        available:true,  emoji:'🍕' },
+  { id:4,  name:'Caesar Salad',      category:'Starters', price:12.00, desc:'Romaine, croutons, parmesan',          available:true,  emoji:'🥗' },
+  { id:5,  name:'Beef Steak',        category:'Mains',    price:28.00, desc:'8oz ribeye, medium-rare',              available:true,  emoji:'🥩' },
+  { id:6,  name:'Pasta Carbonara',   category:'Mains',    price:15.00, desc:'Spaghetti, eggs, guanciale',           available:true,  emoji:'🍝' },
+  { id:7,  name:'French Fries',      category:'Starters', price:5.99,  desc:'Golden crispy fries',                  available:true,  emoji:'🍟' },
+  { id:8,  name:'Tiramisu',          category:'Desserts', price:7.50,  desc:'Classic Italian dessert',              available:false, emoji:'🎂' },
+  { id:9,  name:'Sparkling Water',   category:'Drinks',   price:3.50,  desc:'San Pellegrino 500ml',                 available:true,  emoji:'💧' },
+  { id:10, name:'Iced Tea',          category:'Drinks',   price:4.00,  desc:'Fresh brewed with lemon',              available:true,  emoji:'🍵' },
+  { id:11, name:'Lemonade',          category:'Drinks',   price:4.50,  desc:'Fresh-squeezed lemonade',              available:true,  emoji:'🍋' },
+  { id:12, name:'Veggie Wrap',       category:'Starters', price:11.50, desc:'Mixed veggies, hummus, tortilla',      available:true,  emoji:'🌯' },
+];
+ 
+let nextId = 13;
+let deleteCallback = null;
+ 
+/* ---- Render table ---- */
+function renderMenuTable(q) {
+  const searchQ = (q !== undefined ? q : document.getElementById('table-search').value).toLowerCase();
+  const cat = document.getElementById('cat-filter').value;
+  const tbody = document.getElementById('menu-tbody');
+  const empty = document.getElementById('menu-empty');
+ 
+  const filtered = menuItems.filter(m => {
+    const matchQ = !searchQ || m.name.toLowerCase().includes(searchQ) || m.category.toLowerCase().includes(searchQ) || m.desc.toLowerCase().includes(searchQ);
+    const matchCat = !cat || m.category === cat;
+    return matchQ && matchCat;
+  });
+ 
+  if (!filtered.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+ 
+  tbody.innerHTML = filtered.map(m => `
+    <tr>
+      <td>
+        <div class="item-cell">
+          <span class="item-emoji">${m.emoji}</span>
+          <div>
+            <div class="item-name">${m.name}</div>
+            <div class="item-desc">${m.desc}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="badge-cat">${m.category}</span></td>
+      <td class="price">$${m.price.toFixed(2)}</td>
+      <td>
+        <div class="toggle-wrap">
+          <label class="toggle" title="${m.available ? 'Mark unavailable' : 'Mark available'}">
+            <input type="checkbox" ${m.available ? 'checked' : ''} onchange="toggleAvailability(${m.id}, this.checked)"/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </td>
+      <td>
+        <div class="actions-cell">
+          <button class="icon-btn edit" onclick="openMenuModal(${m.id})" title="Edit">
+            <span class="material-symbols-outlined">edit</span>
+          </button>
+          <button class="icon-btn del" onclick="confirmDelete(${m.id})" title="Delete">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+ 
+/* ---- Toggle availability ---- */
+function toggleAvailability(id, val) {
+  const m = menuItems.find(m => m.id === id);
+  if (!m) return;
+  m.available = val;
+  showToast(`${m.name} marked as ${val ? 'available' : 'unavailable'}`, 'success');
+}
+ 
+/* ---- Open Add/Edit modal ---- */
+function openMenuModal(id) {
+  const m = id ? menuItems.find(m => m.id === id) : null;
+  document.getElementById('edit-id').value = m ? m.id : '';
+  document.getElementById('modal-title').textContent = m ? 'Edit Menu Item' : 'Add Menu Item';
+  document.getElementById('f-name').value = m ? m.name : '';
+  document.getElementById('f-category').value = m ? m.category : 'Mains';
+  document.getElementById('f-price').value = m ? m.price : '';
+  document.getElementById('f-desc').value = m ? m.desc : '';
+  document.getElementById('f-available').checked = m ? m.available : true;
+  document.getElementById('item-modal').classList.add('open');
+}
+ 
+function closeMenuModal() {
+  document.getElementById('item-modal').classList.remove('open');
+}
+ 
+/* ---- Save item ---- */
+function saveItem() {
+  const name = document.getElementById('f-name').value.trim();
+  const price = parseFloat(document.getElementById('f-price').value);
+  if (!name) { showToast('Please enter an item name', 'error'); return; }
+  if (isNaN(price) || price < 0) { showToast('Please enter a valid price', 'error'); return; }
+ 
+  const data = {
+    name,
+    category: document.getElementById('f-category').value,
+    price,
+    desc: document.getElementById('f-desc').value.trim(),
+    available: document.getElementById('f-available').checked,
+  };
+ 
+  const id = parseInt(document.getElementById('edit-id').value);
+  if (id) {
+    const idx = menuItems.findIndex(m => m.id === id);
+    if (idx > -1) { menuItems[idx] = { ...menuItems[idx], ...data }; }
+    showToast('Menu item updated!', 'success');
+  } else {
+    const emojis = ['🍽️','🥘','🫕','🍜','🥙','🧆','🫔','🥪','🍣','🧁'];
+    menuItems.push({ id: nextId++, emoji: emojis[Math.floor(Math.random() * emojis.length)], ...data });
+    showToast('Menu item added!', 'success');
+  }
+ 
+  closeMenuModal();
+  renderMenuTable();
+}
+ 
+/* ---- Delete ---- */
+function confirmDelete(id) {
+  const m = menuItems.find(m => m.id === id);
+  if (!m) return;
+  document.getElementById('delete-msg').textContent = `Delete "${m.name}" from the menu? This cannot be undone.`;
+  deleteCallback = () => {
+    menuItems = menuItems.filter(m => m.id !== id);
+    renderMenuTable();
+    showToast(`${m.name} removed from menu.`, 'success');
+  };
+  document.getElementById('delete-modal').classList.add('open');
+  document.getElementById('delete-confirm-btn').onclick = () => { closeDeleteModal(); deleteCallback(); };
+}
+ 
+function closeDeleteModal() {
+  document.getElementById('delete-modal').classList.remove('open');
+}
+ 
+/* ---- Backdrop click ---- */
+function handleBackdropClick(e, modalId) {
+  if (e.target === document.getElementById(modalId)) {
+    document.getElementById(modalId).classList.remove('open');
+  }
+}
+ 
+/* ---- Toast ---- */
+function showToast(msg, type = 'info') {
+  const tc = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type === 'success' ? 'success' : type === 'error' ? 'error' : ''}`;
+  const icon = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info';
+  t.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px;font-variation-settings:'FILL' 1">${icon}</span>${msg}`;
+  tc.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(20px)';
+    t.style.transition = 'all .3s';
+    setTimeout(() => t.remove(), 300);
+  }, 3000);
+}
+ 
+/* ---- Keyboard: Escape ---- */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeMenuModal(); closeDeleteModal(); }
+});
+ 
+/* ---- Init ---- */
+renderMenuTable();
+</script>
