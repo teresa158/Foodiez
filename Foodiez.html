@@ -1,912 +1,256 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Foodiez — Menu Management</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
- 
-<!-- ============================================================
-     CSS — Menu Management
-     ============================================================ -->
 <style>
-  /* ---- Reset & Base ---- */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #f9f9ff;
-    color: #151c27;
-    min-height: 100vh;
-  }
- 
-  /* ---- Material Icons ---- */
-  .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    vertical-align: middle;
-    font-size: 20px;
-  }
- 
-  /* ---- Layout ---- */
-  #sidebar {
-    position: fixed;
-    left: 0; top: 0;
-    width: 220px;
-    height: 100%;
-    background: #f9fafb;
-    border-right: 1px solid #e5e7eb;
-    display: flex;
-    flex-direction: column;
-    padding: 16px;
-    z-index: 50;
-  }
- 
-  #topbar {
-    position: fixed;
-    top: 0; left: 220px; right: 0;
-    height: 60px;
-    background: #fff;
-    border-bottom: 1px solid #f3f4f6;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    z-index: 40;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  }
- 
-  #main {
-    margin-left: 220px;
-    margin-top: 60px;
-    padding: 28px;
-  }
- 
-  /* ---- Sidebar brand ---- */
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 28px;
-    padding: 0 4px;
-  }
-  .brand-icon {
-    width: 38px; height: 38px;
-    background: #f97316;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .brand-icon span { color: #fff; font-size: 18px; }
-  .brand-name { font-size: 18px; font-weight: 800; color: #ea580c; }
-  .brand-sub { font-size: 10px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: .06em; }
- 
-  /* ---- Nav links ---- */
-  .nav-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 8px 0 0 8px;
-    font-size: 13.5px;
-    font-weight: 500;
-    color: #6b7280;
-    text-decoration: none;
-    transition: background .15s, color .15s;
-    border-right: 3px solid transparent;
-    margin-right: -16px;
-    cursor: pointer;
-  }
-  .nav-link:hover { background: #f3f4f6; color: #111827; }
-  .nav-link.active { background: #fff7ed; color: #ea580c; border-right-color: #ea580c; }
- 
-  /* ---- Pro Plan banner ---- */
-  .pro-banner {
-    margin-top: auto;
-    margin-bottom: 12px;
-    background: #fff7ed;
-    border: 1px solid #fed7aa;
-    border-radius: 12px;
-    padding: 14px;
-  }
-  .pro-banner h4 { font-size: 11px; font-weight: 700; color: #9a3412; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
-  .pro-banner p { font-size: 11px; color: #c2410c; margin-bottom: 10px; }
-  .pro-btn {
-    width: 100%;
-    padding: 8px;
-    background: #ea580c;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .pro-btn:hover { background: #c2410c; }
- 
-  /* ---- User card (bottom) ---- */
-  .user-card {
-    background: #fff;
-    border: 1px solid #f3f4f6;
-    border-radius: 10px;
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .avatar {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: #ffedd5;
-    color: #ea580c;
-    font-weight: 700;
-    font-size: 13px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .user-card .name { font-size: 13px; font-weight: 700; color: #111827; }
-  .user-card .role { font-size: 11px; color: #9ca3af; }
- 
-  /* ---- Topbar ---- */
-  .search-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #f9fafb;
-    border: 1px solid #f3f4f6;
-    border-radius: 10px;
-    padding: 7px 12px;
-    width: 280px;
-  }
-  .search-bar input {
-    border: none;
-    background: transparent;
-    font-size: 13px;
-    color: #374151;
-    outline: none;
-    width: 100%;
-  }
-  .search-bar input::placeholder { color: #9ca3af; }
-  .search-bar .material-symbols-outlined { font-size: 17px; color: #9ca3af; }
- 
-  .topbar-right { display: flex; align-items: center; gap: 12px; }
-  .notif-btn {
-    position: relative;
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: #6b7280;
-  }
-  .notif-btn:hover { background: #f9fafb; }
-  .notif-dot {
-    position: absolute;
-    top: 7px; right: 7px;
-    width: 7px; height: 7px;
-    background: #ea580c;
-    border-radius: 50%;
-    border: 2px solid #fff;
-  }
-  .topbar-avatar {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: #ffedd5;
-    color: #c2410c;
-    font-size: 13px;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-  }
- 
-  /* ---- Page header ---- */
-  .page-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 22px;
-  }
-  .page-title { font-size: 22px; font-weight: 800; color: #111827; }
-  .page-subtitle { font-size: 13px; color: #6b7280; margin-top: 3px; }
- 
-  /* ---- Buttons ---- */
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 18px;
-    background: #ea580c;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background .15s;
-  }
-  .btn-primary:hover { background: #c2410c; }
-  .btn-primary .material-symbols-outlined { font-size: 17px; }
- 
-  /* ---- Toolbar (search + filter) ---- */
-  .toolbar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 18px;
-  }
-  .toolbar-search {
-    position: relative;
-    flex: 1;
-    max-width: 320px;
-  }
-  .toolbar-search .material-symbols-outlined {
-    position: absolute;
-    left: 11px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 17px;
-    color: #9ca3af;
-  }
-  .toolbar-search input {
-    width: 100%;
-    padding: 9px 12px 9px 36px;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    font-size: 13px;
-    background: #fff;
-    color: #111827;
-    outline: none;
-    transition: border-color .15s, box-shadow .15s;
-  }
-  .toolbar-search input:focus {
-    border-color: #f97316;
-    box-shadow: 0 0 0 3px rgba(249,115,22,.15);
-  }
-  .toolbar-search input::placeholder { color: #9ca3af; }
- 
-  .category-select {
-    padding: 9px 14px;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 500;
-    background: #fff;
-    color: #374151;
-    outline: none;
-    cursor: pointer;
-    transition: border-color .15s;
-  }
-  .category-select:focus { border-color: #f97316; }
- 
-  /* ---- Table card ---- */
-  .table-card {
-    background: #fff;
-    border: 1px solid #f3f4f6;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  }
- 
-  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  thead tr { background: rgba(249,250,251,.6); border-bottom: 1px solid #f3f4f6; }
-  thead th {
-    padding: 14px 20px;
-    font-size: 11px;
-    font-weight: 700;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-  }
-  thead th:first-child { text-align: left; }
-  thead th.center { text-align: center; }
-  thead th.right { text-align: right; }
- 
-  tbody tr { border-bottom: 1px solid rgba(243,244,246,.7); transition: background .12s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: #fafafa; }
-  tbody td { padding: 14px 20px; vertical-align: middle; }
- 
-  /* ---- Item cell ---- */
-  .item-cell { display: flex; align-items: center; gap: 12px; }
-  .item-emoji { font-size: 22px; line-height: 1; }
-  .item-name { font-weight: 600; color: #111827; font-size: 13.5px; }
-  .item-desc { font-size: 12px; color: #9ca3af; margin-top: 2px; }
- 
-  /* ---- Category badge ---- */
-  .badge-cat {
-    display: inline-block;
-    padding: 3px 10px;
-    background: #f3f4f6;
-    color: #4b5563;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-  }
- 
-  /* ---- Price ---- */
-  .price { font-weight: 700; color: #111827; text-align: right; }
- 
-  /* ---- Toggle switch ---- */
-  .toggle-wrap { display: flex; justify-content: center; }
-  .toggle {
-    position: relative;
-    width: 36px; height: 20px;
-    cursor: pointer;
-    display: inline-block;
-  }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider {
-    position: absolute;
-    inset: 0;
-    background: #d1d5db;
-    border-radius: 20px;
-    transition: background .2s;
-  }
-  .toggle-slider::before {
-    content: '';
-    position: absolute;
-    left: 3px; top: 3px;
-    width: 14px; height: 14px;
-    background: #fff;
-    border-radius: 50%;
-    transition: transform .2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,.2);
-  }
-  .toggle input:checked + .toggle-slider { background: #f97316; }
-  .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
- 
-  /* ---- Action buttons ---- */
-  .actions-cell { display: flex; justify-content: flex-end; gap: 6px; }
-  .icon-btn {
-    width: 32px; height: 32px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: background .12s, color .12s;
-    background: transparent;
-    color: #9ca3af;
-  }
-  .icon-btn .material-symbols-outlined { font-size: 17px; }
-  .icon-btn.edit:hover { background: #fff7ed; color: #ea580c; }
-  .icon-btn.del:hover { background: #fef2f2; color: #dc2626; }
- 
-  /* ---- Empty state ---- */
-  #menu-empty {
-    display: none;
-    text-align: center;
-    padding: 52px 20px;
-    color: #9ca3af;
-    font-size: 13.5px;
-  }
- 
-  /* ---- Modal backdrop ---- */
-  .modal-bg {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.42);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
-  .modal-bg.open { display: flex; }
- 
-  /* ---- Modal box ---- */
-  .modal-box {
-    background: #fff;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 440px;
-    box-shadow: 0 20px 40px rgba(0,0,0,.18);
-    overflow: hidden;
-    animation: slideUp .25s ease;
-  }
-  @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
- 
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 22px;
-    border-bottom: 1px solid #f3f4f6;
-  }
-  .modal-header h3 { font-size: 16px; font-weight: 700; color: #111827; }
-  .modal-close {
-    width: 30px; height: 30px;
-    border: none; background: transparent;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: #9ca3af;
-  }
-  .modal-close:hover { background: #f3f4f6; color: #374151; }
- 
-  .modal-body { padding: 22px; display: flex; flex-direction: column; gap: 16px; }
- 
-  /* ---- Form fields ---- */
-  .field label {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    margin-bottom: 6px;
-  }
-  .field input,
-  .field select,
-  .field textarea {
-    width: 100%;
-    padding: 9px 13px;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    font-size: 13.5px;
-    font-family: 'Inter', sans-serif;
-    color: #111827;
-    background: #fff;
-    outline: none;
-    transition: border-color .15s, box-shadow .15s;
-  }
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus {
-    border-color: #f97316;
-    box-shadow: 0 0 0 3px rgba(249,115,22,.15);
-  }
-  .field textarea { resize: none; }
-  .field input::placeholder,
-  .field textarea::placeholder { color: #9ca3af; }
- 
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
- 
-  .available-check {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    font-size: 13.5px;
-    color: #374151;
-    font-weight: 500;
-  }
-  .available-check input[type="checkbox"] {
-    width: 17px; height: 17px;
-    accent-color: #f97316;
-    cursor: pointer;
-  }
- 
-  .modal-footer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 0 22px 22px;
-  }
-  .btn-cancel {
-    padding: 10px;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    background: #fff;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #374151;
-    cursor: pointer;
-    transition: background .12s;
-  }
-  .btn-cancel:hover { background: #f9fafb; }
-  .btn-save {
-    padding: 10px;
-    background: #ea580c;
-    border: none;
-    border-radius: 10px;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #fff;
-    cursor: pointer;
-    transition: background .12s;
-  }
-  .btn-save:hover { background: #c2410c; }
- 
-  /* ---- Delete modal ---- */
-  .delete-icon-wrap {
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    background: #fef2f2;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 14px;
-  }
-  .delete-icon-wrap .material-symbols-outlined { font-size: 26px; color: #dc2626; }
-  .delete-modal-box { text-align: center; padding: 28px 22px 22px; }
-  .delete-modal-box h3 { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 8px; }
-  .delete-modal-box p { font-size: 13px; color: #6b7280; margin-bottom: 22px; }
-  .delete-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .btn-delete {
-    padding: 10px;
-    background: #dc2626;
-    border: none;
-    border-radius: 10px;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #fff;
-    cursor: pointer;
-    transition: background .12s;
-  }
-  .btn-delete:hover { background: #b91c1c; }
- 
-  /* ---- Toast ---- */
-  #toast-container {
-    position: fixed;
-    bottom: 24px; right: 24px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    pointer-events: none;
-  }
-  .toast {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-size: 13.5px;
-    font-weight: 500;
-    color: #fff;
-    background: #1f2937;
-    animation: slideInToast .3s ease;
-    pointer-events: auto;
-    min-width: 240px;
-  }
-  .toast.success { background: #059669; }
-  .toast.error { background: #dc2626; }
-  @keyframes slideInToast { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+  body{font-family:'Inter',sans-serif;}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;font-size:20px;}
+  .soft-shadow{box-shadow:0 1px 3px rgba(0,0,0,.05),0 1px 2px rgba(0,0,0,.03);}
+  .overlay-shadow{box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);}
+  #sidebar{width:280px;transition:transform .3s ease;}
+  #main-content{margin-left:280px;}
+  @media(max-width:1024px){#sidebar{transform:translateX(-100%);position:fixed;z-index:50;}#sidebar.open{transform:translateX(0);}#main-content{margin-left:0;}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+  .fade-in{animation:fadeIn .25s ease;}
+  .modal-bg{backdrop-filter:blur(4px);background:rgba(0,0,0,.4);}
+  ::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:99px;}
+  #toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+  .toast{display:flex;align-items:center;gap:10px;background:#1f2937;color:#fff;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:500;animation:slideIn .3s ease;min-width:260px;pointer-events:auto;}
+  .toast.success{background:#059669;}.toast.error{background:#dc2626;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#ff6b35!important;box-shadow:0 0 0 3px rgba(255,107,53,.15);}
+  tbody tr:hover{background:#f9fafb;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .spinner{width:22px;height:22px;border:3px solid #e5e7eb;border-top-color:#ea580c;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:8px;vertical-align:middle;}
 </style>
 </head>
-<body>
- 
-<!-- ============================================================
-     SIDEBAR
-     ============================================================ -->
-<aside id="sidebar">
-  <div class="brand">
-    <div class="brand-icon">
-      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;font-size:20px;">restaurant</span>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden" onclick="toggleSidebar()"></div>
+
+<aside id="sidebar" class="fixed left-0 top-0 h-full bg-white border-r border-gray-200 flex flex-col p-4 z-50">
+  <div class="flex items-center gap-3 mb-8 px-2">
+    <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
+      <span class="material-symbols-outlined text-white" style="font-variation-settings:'FILL' 1;font-size:22px;">restaurant</span>
     </div>
     <div>
-      <div class="brand-name">Foodiez</div>
-      <div class="brand-sub">Restaurant Admin</div>
+      <h1 class="text-xl font-black text-orange-600 tracking-tight">Foodiez</h1>
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Restaurant Admin</p>
     </div>
   </div>
- 
-  <nav style="display:flex;flex-direction:column;gap:2px;">
-    <a class="nav-link" href="#">
+  <nav class="flex-1 space-y-1">
+    <a href="1_dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all">
       <span class="material-symbols-outlined">dashboard</span> Dashboard
     </a>
-    <a class="nav-link" href="#">
+    <a href="2_orders.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all">
       <span class="material-symbols-outlined">receipt_long</span> Orders
     </a>
-    <a class="nav-link" href="#">
+    <a href="3_new_order.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all">
       <span class="material-symbols-outlined">add_shopping_cart</span> New Order
     </a>
-    <a class="nav-link active" href="#">
-      <span class="material-symbols-outlined">menu_book</span> Menu
+    <a href="4_menu.html" class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm bg-orange-50 text-orange-600 border-r-2 border-orange-600">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">menu_book</span> Menu
     </a>
-    <a class="nav-link" href="#">
+    <a href="5_settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all">
       <span class="material-symbols-outlined">settings</span> Settings
     </a>
   </nav>
- 
-  <div class="pro-banner">
-    <h4>Pro Plan</h4>
-    <p>Manage up to 5 locations seamlessly.</p>
-    <button class="pro-btn">Upgrade Now</button>
+  <div class="mt-auto mb-4 p-4 bg-orange-50 rounded-xl border border-orange-100">
+    <p class="text-xs font-bold text-orange-800 mb-1 uppercase tracking-wider">Pro Plan</p>
+    <p class="text-xs text-orange-700 mb-3">Manage up to 5 locations.</p>
+    <button class="w-full py-2 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition-colors">Upgrade Now</button>
   </div>
- 
-  <div class="user-card">
-    <div class="avatar">CJ</div>
-    <div>
-      <div class="name">Chef Julian</div>
-      <div class="role">Store Manager</div>
+  <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-sm">CJ</div>
+      <div><p class="text-sm font-bold">Chef Julian</p><p class="text-xs text-gray-500">Store Manager</p></div>
     </div>
   </div>
 </aside>
- 
-<!-- ============================================================
-     TOPBAR
-     ============================================================ -->
-<header id="topbar">
-  <div class="search-bar">
-    <span class="material-symbols-outlined">search</span>
-    <input id="global-search" placeholder="Search orders, customers..." type="text" oninput="renderMenuTable(this.value)"/>
-  </div>
-  <div class="topbar-right">
-    <button class="notif-btn">
-      <span class="material-symbols-outlined">notifications</span>
-      <span class="notif-dot"></span>
+
+<div id="main-content" class="min-h-screen flex flex-col">
+  <header class="fixed top-0 right-0 lg:left-[280px] left-0 h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 z-30 soft-shadow">
+    <button class="lg:hidden p-2 text-gray-500 hover:bg-gray-50 rounded-lg" onclick="toggleSidebar()">
+      <span class="material-symbols-outlined">menu</span>
     </button>
-    <div class="topbar-avatar">CJ</div>
-  </div>
-</header>
- 
-<!-- ============================================================
-     MAIN — Menu Management
-     ============================================================ -->
-<main id="main">
- 
-  <!-- Page header -->
-  <div class="page-header">
-    <div>
-      <h1 class="page-title">Menu Management</h1>
-      <p class="page-subtitle">Add, edit, or remove menu items and categories.</p>
+    <div class="flex items-center bg-gray-50 rounded-xl px-3 py-2 border border-gray-100 w-full max-w-sm">
+      <span class="material-symbols-outlined text-gray-400" style="font-size:18px;">search</span>
+      <input id="search-input" class="bg-transparent border-none outline-none text-sm w-full ml-2 placeholder:text-gray-400" placeholder="Search menu items..." type="text" oninput="renderTable()"/>
     </div>
-    <button class="btn-primary" onclick="openMenuModal()">
-      <span class="material-symbols-outlined">add</span> Add Item
-    </button>
-  </div>
- 
-  <!-- Toolbar -->
-  <div class="toolbar">
-    <div class="toolbar-search">
-      <span class="material-symbols-outlined">search</span>
-      <input id="table-search" placeholder="Search menu items..." type="text" oninput="renderMenuTable(this.value)"/>
+    <div class="flex items-center gap-3 ml-4">
+      <button class="relative p-2 text-gray-500 hover:bg-gray-50 rounded-full" onclick="showToast('3 new notifications!','info')">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-orange-600 rounded-full border-2 border-white"></span>
+      </button>
+      <div class="h-8 w-px bg-gray-200"></div>
+      <div class="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-sm">CJ</div>
     </div>
-    <select id="cat-filter" class="category-select" onchange="renderMenuTable()">
-      <option value="">All Categories</option>
-      <option>Starters</option>
-      <option>Mains</option>
-      <option>Desserts</option>
-      <option>Drinks</option>
-    </select>
-  </div>
- 
-  <!-- Table -->
-  <div class="table-card">
-    <table>
-      <thead>
-        <tr>
-          <th style="text-align:left;">Item</th>
-          <th style="text-align:left;">Category</th>
-          <th class="right">Price</th>
-          <th class="center">Available</th>
-          <th class="right">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="menu-tbody"></tbody>
-    </table>
-    <div id="menu-empty">No menu items found.</div>
-  </div>
- 
-</main>
- 
-<!-- ============================================================
-     MODAL — Add / Edit Item
-     ============================================================ -->
-<div id="item-modal" class="modal-bg" onclick="handleBackdropClick(event,'item-modal')">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <h3 id="modal-title">Add Menu Item</h3>
-      <button class="modal-close" onclick="closeMenuModal()">
-        <span class="material-symbols-outlined">close</span>
+  </header>
+
+  <main class="mt-16 p-6 flex-1 max-w-[1440px] mx-auto w-full fade-in">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Menu Management</h2>
+        <p class="text-sm text-gray-500 mt-0.5">Add, edit, or remove menu items and categories.</p>
+      </div>
+      <button onclick="openItemModal()" class="flex items-center gap-2 px-5 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors soft-shadow whitespace-nowrap">
+        <span class="material-symbols-outlined" style="font-size:18px;">add</span> Add Item
       </button>
     </div>
-    <div class="modal-body">
-      <input type="hidden" id="edit-id"/>
-      <div class="field">
-        <label>Item Name *</label>
-        <input id="f-name" placeholder="ex: Grilled Salmon" type="text"/>
+
+    <!-- Filters -->
+    <div class="flex gap-3 mb-6 flex-wrap">
+      <div class="relative flex-1 max-w-sm">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" style="font-size:18px;">search</span>
+        <input id="filter-search" class="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm placeholder:text-gray-400 soft-shadow" placeholder="Search items…" oninput="renderTable()"/>
       </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Category</label>
-          <select id="f-category">
-            <option>Starters</option>
-            <option>Mains</option>
-            <option>Desserts</option>
-            <option>Drinks</option>
+      <select id="cat-filter" class="bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium soft-shadow outline-none" onchange="renderTable()">
+        <option value="">All Categories</option>
+        <option>Starters</option><option>Mains</option><option>Desserts</option><option>Drinks</option>
+      </select>
+    </div>
+
+    <!-- Stats row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="menu-stats"></div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-2xl border border-gray-100 soft-shadow overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-100 bg-gray-50/50">
+            <th class="text-left px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Item</th>
+            <th class="text-left px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Category</th>
+            <th class="text-right px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Price</th>
+            <th class="text-center px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Available</th>
+            <th class="text-right px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="menu-tbody"></tbody>
+      </table>
+      <p id="menu-empty" class="hidden text-center text-gray-400 py-12 text-sm">No menu items found.</p>
+    </div>
+  </main>
+</div>
+
+<!-- Add/Edit Item Modal -->
+<div id="item-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4" style="display:none;">
+  <div class="absolute inset-0 modal-bg" onclick="closeItemModal()"></div>
+  <div class="relative bg-white rounded-2xl overlay-shadow w-full max-w-md max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl">
+      <h3 class="font-bold text-gray-900 text-lg" id="item-modal-title">Add Menu Item</h3>
+      <button onclick="closeItemModal()" class="p-1.5 hover:bg-gray-100 rounded-lg"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="p-6 space-y-4">
+      <input type="hidden" id="item-id"/>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Item Name *</label>
+        <input id="item-name" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="e.g. Grilled Salmon"/>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Category</label>
+          <select id="item-category" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm">
+            <option>Starters</option><option>Mains</option><option>Desserts</option><option>Drinks</option>
           </select>
         </div>
-        <div class="field">
-          <label>Price ($) *</label>
-          <input id="f-price" placeholder="0.00" type="number" min="0" step="0.01"/>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Price ($) *</label>
+          <input id="item-price" type="number" min="0" step="0.01" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="0.00"/>
         </div>
       </div>
-      <div class="field">
-        <label>Description</label>
-        <textarea id="f-desc" rows="2" placeholder="Brève description..."></textarea>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Emoji</label>
+        <input id="item-emoji" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="🍽️" maxlength="4"/>
       </div>
-      <label class="available-check">
-        <input type="checkbox" id="f-available" checked/>
-        Available on menu
+      <div>
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Description</label>
+        <textarea id="item-desc" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm resize-none" rows="2" placeholder="Brief description…"></textarea>
+      </div>
+      <label class="flex items-center gap-3 cursor-pointer">
+        <input type="checkbox" id="item-available" checked class="w-4 h-4 accent-orange-600"/>
+        <span class="text-sm text-gray-700 font-medium">Available on menu</span>
       </label>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeMenuModal()">Cancel</button>
-      <button class="btn-save" onclick="saveItem()">Save Item</button>
-    </div>
-  </div>
-</div>
- 
-<!-- ============================================================
-     MODAL — Delete Confirm
-     ============================================================ -->
-<div id="delete-modal" class="modal-bg" onclick="handleBackdropClick(event,'delete-modal')">
-  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:360px;">
-    <div class="delete-modal-box">
-      <div class="delete-icon-wrap">
-        <span class="material-symbols-outlined">delete_forever</span>
-      </div>
-      <h3>Confirm Delete</h3>
-      <p id="delete-msg">Are you sure? This action cannot be undone.</p>
-      <div class="delete-footer">
-        <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-        <button class="btn-delete" id="delete-confirm-btn">Delete</button>
+      <div class="flex gap-3 pt-2">
+        <button onclick="closeItemModal()" class="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold hover:bg-gray-50">Cancel</button>
+        <button id="item-save-btn" onclick="saveItem()" class="flex-1 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700">Save Item</button>
       </div>
     </div>
   </div>
 </div>
- 
-<!-- Toast container -->
+
+<!-- Delete Modal -->
+<div id="delete-modal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4" style="display:none;">
+  <div class="absolute inset-0 modal-bg" onclick="closeDeleteModal()"></div>
+  <div class="relative bg-white rounded-2xl overlay-shadow w-full max-w-sm p-6 text-center">
+    <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <span class="material-symbols-outlined text-red-600" style="font-size:28px;">delete_forever</span>
+    </div>
+    <h3 class="font-bold text-gray-900 text-lg mb-2">Confirm Delete</h3>
+    <p class="text-gray-500 text-sm mb-6" id="delete-msg">Are you sure?</p>
+    <div class="flex gap-3">
+      <button onclick="closeDeleteModal()" class="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold hover:bg-gray-50">Cancel</button>
+      <button id="delete-confirm-btn" class="flex-1 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700">Delete</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast-container"></div>
- 
-<!-- ============================================================
-     JAVASCRIPT — Menu Management
-     ============================================================ -->
+
 <script>
-/* ---- Data ---- */
-let menuItems = [
-  { id:1,  name:'Grilled Salmon',    category:'Mains',    price:18.99, desc:'Fresh Atlantic salmon with herbs',      available:true,  emoji:'🐟' },
-  { id:2,  name:'Chicken Burger',    category:'Mains',    price:14.50, desc:'Crispy fried chicken with lettuce',    available:true,  emoji:'🍔' },
-  { id:3,  name:'Margherita Pizza',  category:'Mains',    price:16.50, desc:'Classic tomato and mozzarella',        available:true,  emoji:'🍕' },
-  { id:4,  name:'Caesar Salad',      category:'Starters', price:12.00, desc:'Romaine, croutons, parmesan',          available:true,  emoji:'🥗' },
-  { id:5,  name:'Beef Steak',        category:'Mains',    price:28.00, desc:'8oz ribeye, medium-rare',              available:true,  emoji:'🥩' },
-  { id:6,  name:'Pasta Carbonara',   category:'Mains',    price:15.00, desc:'Spaghetti, eggs, guanciale',           available:true,  emoji:'🍝' },
-  { id:7,  name:'French Fries',      category:'Starters', price:5.99,  desc:'Golden crispy fries',                  available:true,  emoji:'🍟' },
-  { id:8,  name:'Tiramisu',          category:'Desserts', price:7.50,  desc:'Classic Italian dessert',              available:false, emoji:'🎂' },
-  { id:9,  name:'Sparkling Water',   category:'Drinks',   price:3.50,  desc:'San Pellegrino 500ml',                 available:true,  emoji:'💧' },
-  { id:10, name:'Iced Tea',          category:'Drinks',   price:4.00,  desc:'Fresh brewed with lemon',              available:true,  emoji:'🍵' },
-  { id:11, name:'Lemonade',          category:'Drinks',   price:4.50,  desc:'Fresh-squeezed lemonade',              available:true,  emoji:'🍋' },
-  { id:12, name:'Veggie Wrap',       category:'Starters', price:11.50, desc:'Mixed veggies, hummus, tortilla',      available:true,  emoji:'🌯' },
+/* ─── IN-MEMORY API (replaces missing api.js) ─── */
+const FALLBACK_MENU = [
+  {id:1, name:'Grilled Salmon',    category:'Mains',    price:18.99, desc:'Fresh Atlantic salmon with herbs',       available:true,  emoji:'🐟'},
+  {id:2, name:'Chicken Burger',    category:'Mains',    price:14.50, desc:'Crispy fried chicken with lettuce',      available:true,  emoji:'🍔'},
+  {id:3, name:'Margherita Pizza',  category:'Mains',    price:16.50, desc:'Classic tomato and mozzarella',         available:true,  emoji:'🍕'},
+  {id:4, name:'Caesar Salad',      category:'Starters', price:12.00, desc:'Romaine, croutons, parmesan',           available:true,  emoji:'🥗'},
+  {id:5, name:'Beef Steak',        category:'Mains',    price:28.00, desc:'8oz ribeye, medium-rare',               available:true,  emoji:'🥩'},
+  {id:6, name:'Pasta Carbonara',   category:'Mains',    price:15.00, desc:'Spaghetti, eggs, guanciale',            available:true,  emoji:'🍝'},
+  {id:7, name:'French Fries',      category:'Starters', price:5.99,  desc:'Golden crispy fries',                   available:true,  emoji:'🍟'},
+  {id:8, name:'Tiramisu',          category:'Desserts', price:7.50,  desc:'Classic Italian dessert',               available:false, emoji:'🎂'},
+  {id:9, name:'Sparkling Water',   category:'Drinks',   price:3.50,  desc:'San Pellegrino 500ml',                  available:true,  emoji:'💧'},
+  {id:10,name:'Iced Tea',          category:'Drinks',   price:4.00,  desc:'Fresh brewed with lemon',               available:true,  emoji:'🍵'},
+  {id:11,name:'Lemonade',          category:'Drinks',   price:4.50,  desc:'Fresh-squeezed lemonade',               available:true,  emoji:'🍋'},
+  {id:12,name:'Veggie Wrap',       category:'Starters', price:11.50, desc:'Mixed veggies, hummus, tortilla',       available:true,  emoji:'🌯'},
+  {id:13,name:'Sushi Platter',     category:'Mains',    price:32.00, desc:'16-piece assorted sushi',               available:true,  emoji:'🍱'},
+  {id:14,name:'Garlic Bread',      category:'Starters', price:4.00,  desc:'Toasted with garlic butter',            available:true,  emoji:'🥖'},
+  {id:15,name:'Miso Soup',         category:'Starters', price:5.00,  desc:'Traditional Japanese style',            available:true,  emoji:'🍲'},
+  {id:16,name:'Cheesecake',        category:'Desserts', price:8.50,  desc:'New York style with berry sauce',       available:true,  emoji:'🍰'},
 ];
- 
-let nextId = 13;
-let deleteCallback = null;
- 
-/* ---- Render table ---- */
-function renderMenuTable(q) {
-  const searchQ = (q !== undefined ? q : document.getElementById('table-search').value).toLowerCase();
-  const cat = document.getElementById('cat-filter').value;
-  const tbody = document.getElementById('menu-tbody');
-  const empty = document.getElementById('menu-empty');
- 
-  const filtered = menuItems.filter(m => {
-    const matchQ = !searchQ || m.name.toLowerCase().includes(searchQ) || m.category.toLowerCase().includes(searchQ) || m.desc.toLowerCase().includes(searchQ);
-    const matchCat = !cat || m.category === cat;
-    return matchQ && matchCat;
-  });
- 
-  if (!filtered.length) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
+
+// Simple delay to simulate async network call
+const delay = ms => new Promise(r => setTimeout(r, ms));
+
+const api = {
+  async getMenu() {
+    await delay(300);
+    return JSON.parse(JSON.stringify(FALLBACK_MENU));
+  },
+  async updateMenuItem(id, data) {
+    await delay(150);
+    return { id: Number(id), ...data };
+  },
+  async createMenuItem(data) {
+    await delay(150);
+    return { ...data, id: Date.now() };
+  },
+  async deleteMenuItem(id) {
+    await delay(150);
+    return { success: true };
   }
-  empty.style.display = 'none';
- 
-  tbody.innerHTML = filtered.map(m => `
-    <tr>
-      <td>
-        <div class="item-cell">
-          <span class="item-emoji">${m.emoji}</span>
-          <div>
-            <div class="item-name">${m.name}</div>
-            <div class="item-desc">${m.desc}</div>
-          </div>
-        </div>
-      </td>
-      <td><span class="badge-cat">${m.category}</span></td>
-      <td class="price">$${m.price.toFixed(2)}</td>
-      <td>
-        <div class="toggle-wrap">
-          <label class="toggle" title="${m.available ? 'Mark unavailable' : 'Mark available'}">
-            <input type="checkbox" ${m.available ? 'checked' : ''} onchange="toggleAvailability(${m.id}, this.checked)"/>
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-      </td>
-      <td>
-        <div class="actions-cell">
-          <button class="icon-btn edit" onclick="openMenuModal(${m.id})" title="Edit">
-            <span class="material-symbols-outlined">edit</span>
-          </button>
-          <button class="icon-btn del" onclick="confirmDelete(${m.id})" title="Delete">
-            <span class="material-symbols-outlined">delete</span>
-          </button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-}
- 
-/* ---- Toggle availability ---- */
-function toggleAvailability(id, val) {
-  const m = menuItems.find(m => m.id === id);
-  if (!m) return;
-  m.available = val;
-  showToast(`${m.name} marked as ${val ? 'available' : 'unavailable'}`, 'success');
-}
- 
-/* ---- Open Add/Edit modal ---- */
-function openMenuModal(id) {
-  const m = id ? menuItems.find(m => m.id === id) : null;
-  document.getElementById('edit-id').value = m ? m.id : '';
-  document.getElementById('modal-title').textContent = m ? 'Edit Menu Item' : 'Add Menu Item';
-  document.getElementById('f-name').value = m ? m.name : '';
-  document.getElementById('f-category').value = m ? m.category : 'Mains';
-  document.getElementById('f-price').value = m ? m.price : '';
-  document.getElementById('f-desc').value = m ? m.desc : '';
-  document.getElementById('f-available').checked = m ? m.available : true;
-  document.getElementById('item-modal').classList.add('open');
-}
- 
-function closeMenuModal() {
-  document.getElementById('item-modal').classList.remove('open');
-}
- 
-/* ---- Save item ---- */
-function saveItem() {
-  const name = document.getElementById('f-name').value.trim();
-  const price = parseFloat(document.getElementById('f-price').value);
-  if (!name) { showToast('Please enter an item name', 'error'); return; }
-  if (isNaN(price) || price < 0) { showToast('Please enter a valid price', 'error'); return; }
- 
-  const data = {
-    name,
-    category: document.getElementById('f-category').value,
-    price,
-    desc: document.getElementById('f-desc').value.trim(),
-    available: document.getElementById('f-available').checked,
-  };
- 
-  const id = parseInt(document.getElementById('edit-id').value);
-  if (id) {
-    const idx = menuItems.findIndex(m => m.id === id);
-    if (idx > -1) { menuItems[idx] = { ...menuItems[idx], ...data }; }
-    showToast('Menu item updated!', 'success');
-  } else {
-    const emojis = ['🍽️','🥘','🫕','🍜','🥙','🧆','🫔','🥪','🍣','🧁'];
-    menuItems.push({ id: nextId++, emoji: emojis[Math.floor(Math.random() * emojis.length)], ...data });
-    showToast('Menu item added!', 'success');
-  }
- 
-  closeMenuModal();
-  renderMenuTable();
-}
- 
-/* ---- Delete ---- */
-function confirmDelete(id) {
-  const m = menuItems.find(m => m.id === id);
-  if (!m) return;
-  document.getElementById('delete-msg').textContent = `Delete "${m.name}" from the menu? This cannot be undone.`;
-  deleteCallback = () => {
-    menuItems = menuItems.filter(m => m.id !== id);
-    renderMenuTable();
-    showToast(`${m.name} removed from menu.`, 'success');
-  };
-  document.getElementById('delete-modal').classList.add('open');
-  document.getElementById('delete-confirm-btn').onclick = () => { closeDeleteModal(); deleteCallback(); };
-}
- 
-function closeDeleteModal() {
-  document.getElementById('delete-modal').classList.remove('open');
-}
- 
-/* ---- Backdrop click ---- */
-function handleBackdropClick(e, modalId) {
-  if (e.target === document.getElementById(modalId)) {
-    document.getElementById(modalId).classList.remove('open');
-  }
-}
- 
-/* ---- Toast ---- */
+};
+
+/* ─── APP STATE ─── */
+let menuItems = [];
+let deleteAction = null;
+
+/* ─── UTILS ─── */
+const fmt = n => '$' + Number(n).toFixed(2);
+
 function showToast(msg, type = 'info') {
   const tc = document.getElementById('toast-container');
   const t = document.createElement('div');
@@ -919,14 +263,237 @@ function showToast(msg, type = 'info') {
     t.style.transform = 'translateX(20px)';
     t.style.transition = 'all .3s';
     setTimeout(() => t.remove(), 300);
-  }, 3000);
+  }, 3500);
 }
- 
-/* ---- Keyboard: Escape ---- */
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('hidden');
+}
+
+/* ─── MODAL HELPERS ─── */
+function showModal(id) {
+  const el = document.getElementById(id);
+  el.style.display = 'flex';
+  el.classList.remove('hidden');
+}
+function hideModal(id) {
+  const el = document.getElementById(id);
+  el.style.display = 'none';
+  el.classList.add('hidden');
+}
+
+/* ─── STATS ─── */
+function renderStats() {
+  const statsEl = document.getElementById('menu-stats');
+  const cats = [...new Set(menuItems.map(m => m.category))];
+  statsEl.innerHTML = [
+    { label: 'Total Items',  value: menuItems.length,                          icon: 'inventory_2',  color: 'blue'   },
+    { label: 'Available',    value: menuItems.filter(m => m.available).length, icon: 'check_circle', color: 'green'  },
+    { label: 'Unavailable',  value: menuItems.filter(m => !m.available).length,icon: 'cancel',       color: 'red'    },
+    { label: 'Categories',   value: cats.length,                               icon: 'category',     color: 'orange' },
+  ].map(s => `
+    <div class="bg-white p-4 rounded-xl border border-gray-100 soft-shadow">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-${s.color}-50 rounded-lg text-${s.color}-600">
+          <span class="material-symbols-outlined" style="font-size:18px;">${s.icon}</span>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">${s.label}</p>
+          <p class="text-xl font-bold text-gray-900">${s.value}</p>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ─── TABLE ─── */
+function renderTable() {
+  const ql = (document.getElementById('filter-search').value || document.getElementById('search-input').value).toLowerCase();
+  const cat = document.getElementById('cat-filter').value;
+
+  const filtered = menuItems.filter(m => {
+    const matchQ = !ql || m.name.toLowerCase().includes(ql) || m.category.toLowerCase().includes(ql);
+    const matchCat = !cat || m.category === cat;
+    return matchQ && matchCat;
+  });
+
+  const tbody = document.getElementById('menu-tbody');
+  const empty = document.getElementById('menu-empty');
+
+  if (!filtered.length) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  tbody.innerHTML = filtered.map(m => `
+    <tr class="border-b border-gray-50 transition-colors" id="row-${m.id}">
+      <td class="px-6 py-4">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">${m.emoji || '🍽️'}</span>
+          <div>
+            <p class="font-semibold text-gray-900">${escapeHtml(m.name)}</p>
+            <p class="text-xs text-gray-400 mt-0.5">${escapeHtml(m.desc || '')}</p>
+          </div>
+        </div>
+      </td>
+      <td class="px-6 py-4">
+        <span class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold">${m.category}</span>
+      </td>
+      <td class="px-6 py-4 text-right font-bold text-gray-900">${fmt(m.price)}</td>
+      <td class="px-6 py-4 text-center">
+        <button onclick="toggleAvail(${m.id})" title="${m.available ? 'Mark unavailable' : 'Mark available'}"
+          class="w-11 h-6 rounded-full transition-colors relative flex items-center mx-auto ${m.available ? 'bg-orange-500' : 'bg-gray-200'}">
+          <span class="absolute w-5 h-5 bg-white rounded-full shadow transition-transform ${m.available ? 'translate-x-5' : 'translate-x-0.5'}"></span>
+        </button>
+      </td>
+      <td class="px-6 py-4 text-right">
+        <div class="flex justify-end gap-2">
+          <button onclick="openItemModal(${m.id})" title="Edit item"
+            class="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors">
+            <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+          </button>
+          <button onclick="confirmDelete(${m.id})" title="Delete item"
+            class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+            <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+          </button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ─── TOGGLE AVAILABILITY ─── */
+async function toggleAvail(id) {
+  const m = menuItems.find(m => m.id === id);
+  if (!m) return;
+  const newVal = !m.available;
+  try {
+    await api.updateMenuItem(id, { available: newVal });
+    m.available = newVal;
+    renderTable();
+    renderStats();
+    showToast(`${m.name} is now ${m.available ? 'available ✓' : 'unavailable'}`, 'success');
+  } catch (e) {
+    showToast('Failed to update availability', 'error');
+  }
+}
+
+/* ─── ITEM MODAL ─── */
+function openItemModal(id) {
+  const m = id ? menuItems.find(m => m.id === id) : null;
+  document.getElementById('item-id').value       = m ? m.id : '';
+  document.getElementById('item-modal-title').textContent = m ? 'Edit Menu Item' : 'Add Menu Item';
+  document.getElementById('item-name').value      = m ? m.name : '';
+  document.getElementById('item-category').value  = m ? m.category : 'Mains';
+  document.getElementById('item-price').value     = m ? m.price : '';
+  document.getElementById('item-emoji').value     = m ? (m.emoji || '') : '';
+  document.getElementById('item-desc').value      = m ? (m.desc || '') : '';
+  document.getElementById('item-available').checked = m ? m.available : true;
+  showModal('item-modal');
+  setTimeout(() => document.getElementById('item-name').focus(), 50);
+}
+
+function closeItemModal() {
+  hideModal('item-modal');
+}
+
+async function saveItem() {
+  const name  = document.getElementById('item-name').value.trim();
+  const price = parseFloat(document.getElementById('item-price').value);
+
+  if (!name)              { showToast('Item name is required', 'error'); return; }
+  if (isNaN(price) || price < 0) { showToast('A valid price is required', 'error'); return; }
+
+  const data = {
+    name,
+    category:  document.getElementById('item-category').value,
+    price,
+    emoji:     document.getElementById('item-emoji').value || '🍽️',
+    desc:      document.getElementById('item-desc').value,
+    available: document.getElementById('item-available').checked,
+  };
+
+  const rawId = document.getElementById('item-id').value;
+  const btn   = document.getElementById('item-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    if (rawId) {
+      const id = Number(rawId);
+      await api.updateMenuItem(id, data);
+      const idx = menuItems.findIndex(m => m.id === id);
+      if (idx > -1) menuItems[idx] = { ...menuItems[idx], ...data };
+      showToast('Item updated!', 'success');
+    } else {
+      const created = await api.createMenuItem(data);
+      menuItems.push({ ...data, id: created.id });
+      showToast('Item added!', 'success');
+    }
+    closeItemModal();
+    renderTable();
+    renderStats();
+  } catch (e) {
+    showToast('Failed to save item', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Item';
+  }
+}
+
+/* ─── DELETE MODAL ─── */
+function confirmDelete(id) {
+  const m = menuItems.find(m => m.id === id);
+  if (!m) return;
+  document.getElementById('delete-msg').textContent =
+    `Delete "${m.name}" from the menu? This cannot be undone.`;
+
+  document.getElementById('delete-confirm-btn').onclick = async () => {
+    closeDeleteModal();
+    try {
+      await api.deleteMenuItem(id);
+      menuItems = menuItems.filter(m => m.id !== id);
+      renderTable();
+      renderStats();
+      showToast(`${m.name} removed from menu.`, 'success');
+    } catch (e) {
+      showToast('Failed to delete item', 'error');
+    }
+  };
+
+  showModal('delete-modal');
+}
+
+function closeDeleteModal() {
+  hideModal('delete-modal');
+}
+
+/* ─── KEYBOARD ESC ─── */
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeMenuModal(); closeDeleteModal(); }
+  if (e.key === 'Escape') { closeItemModal(); closeDeleteModal(); }
 });
- 
-/* ---- Init ---- */
-renderMenuTable();
+
+/* ─── INIT ─── */
+async function init() {
+  document.getElementById('menu-tbody').innerHTML =
+    '<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400"><span class="spinner"></span>Loading menu…</td></tr>';
+  try {
+    menuItems = await api.getMenu();
+    showToast('Menu loaded ✓', 'success');
+  } catch (e) {
+    showToast('Failed to load menu', 'error');
+    menuItems = [];
+  }
+  renderTable();
+  renderStats();
+}
+
+init();
 </script>
+</body>
+</html>
