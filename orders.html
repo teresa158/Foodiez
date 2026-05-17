@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Foodiez — Orders</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<!-- ✅ Fichier API externe -->
+<script src="./api.js"></script>
+<style>
+  body{font-family:'Inter',sans-serif;}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;font-size:20px;}
+  .soft-shadow{box-shadow:0 1px 3px rgba(0,0,0,.05),0 1px 2px rgba(0,0,0,.03);}
+  .overlay-shadow{box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);}
+  #sidebar{width:280px;transition:transform .3s ease;}
+  #main-content{margin-left:280px;}
+  @media(max-width:1024px){#sidebar{transform:translateX(-100%);position:fixed;z-index:50;}#sidebar.open{transform:translateX(0);}#main-content{margin-left:0;}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+  .fade-in{animation:fadeIn .25s ease;}
+  .modal-bg{backdrop-filter:blur(4px);background:rgba(0,0,0,.4);}
+  .badge-pending{background:#eff6ff;color:#1d4ed8;}
+  .badge-accepted{background:#f0fdf4;color:#15803d;}
+  .badge-completed{background:#ecfdf5;color:#065f46;}
+  .badge-rejected{background:#fef2f2;color:#991b1b;}
+  .badge-preparing{background:#fff7ed;color:#c2410c;}
+  ::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:99px;}
+  #toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+  .toast{display:flex;align-items:center;gap:10px;background:#1f2937;color:#fff;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:500;animation:slideIn .3s ease;min-width:260px;pointer-events:auto;}
+  .toast.success{background:#059669;}.toast.error{background:#dc2626;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .spinner{width:22px;height:22px;border:3px solid #e5e7eb;border-top-color:#ea580c;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:8px;vertical-align:middle;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#ff6b35!important;box-shadow:0 0 0 3px rgba(255,107,53,.15);}
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden" onclick="toggleSidebar()"></div>
+
+<aside id="sidebar" class="fixed left-0 top-0 h-full bg-white border-r border-gray-200 flex flex-col p-4 z-50">
+  <div class="flex items-center gap-3 mb-8 px-2">
+    <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
+      <span class="material-symbols-outlined text-white" style="font-variation-settings:'FILL' 1;font-size:22px;">restaurant</span>
+    </div>
+    <div>
+      <h1 class="text-xl font-black text-orange-600 tracking-tight">Foodiez</h1>
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Restaurant Admin</p>
+    </div>
+  </div>
+  <nav class="flex-1 space-y-1">
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm bg-orange-50 text-orange-600 border-r-2 border-orange-600"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">receipt_long</span> Orders</a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all"><span class="material-symbols-outlined">add_shopping_cart</span> New Order</a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all"><span class="material-symbols-outlined">menu_book</span> Menu</a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all"><span class="material-symbols-outlined">settings</span> Settings</a>
+  </nav>
+  <div class="mt-auto mb-4 p-4 bg-orange-50 rounded-xl border border-orange-100">
+    <p class="text-xs font-bold text-orange-800 mb-1 uppercase tracking-wider">Pro Plan</p>
+    <p class="text-xs text-orange-700 mb-3">Manage up to 5 locations.</p>
+    <button class="w-full py-2 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition-colors">Upgrade Now</button>
+  </div>
+  <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-sm">CJ</div>
+      <div><p class="text-sm font-bold">Chef Julian</p><p class="text-xs text-gray-500">Store Manager</p></div>
+    </div>
+  </div>
+</aside>
+
+<div id="main-content" class="min-h-screen flex flex-col">
+  <header class="fixed top-0 right-0 lg:left-[280px] left-0 h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 z-30 soft-shadow">
+    <button class="lg:hidden p-2 text-gray-500 hover:bg-gray-50 rounded-lg" onclick="toggleSidebar()">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    <div class="flex items-center bg-gray-50 rounded-xl px-3 py-2 border border-gray-100 w-full max-w-sm">
+      <span class="material-symbols-outlined text-gray-400" style="font-size:18px;">search</span>
+      <input id="search-input" class="bg-transparent border-none outline-none text-sm w-full ml-2 placeholder:text-gray-400" placeholder="Search orders, customers..." type="text" oninput="renderOrders()"/>
+    </div>
+    <div class="flex items-center gap-3 ml-4">
+      <button class="relative p-2 text-gray-500 hover:bg-gray-50 rounded-full" onclick="showToast('3 new notifications!','info')">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-orange-600 rounded-full border-2 border-white"></span>
+      </button>
+      <div class="h-8 w-px bg-gray-200"></div>
+      <div class="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-sm">CJ</div>
+    </div>
+  </header>
+
+  <main class="mt-16 p-6 flex-1 max-w-[1440px] mx-auto w-full fade-in">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Orders Management</h2>
+        <p class="text-sm text-gray-500 mt-0.5">Track and manage all orders in real-time.</p>
+      </div>
+      <button onclick="openCreateModal()" class="flex items-center gap-2 px-5 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors soft-shadow whitespace-nowrap">
+        <span class="material-symbols-outlined" style="font-size:18px;">add</span> Create Order
+      </button>
+    </div>
+
+    <div class="flex border-b border-gray-200 mb-6 gap-6 overflow-x-auto">
+      <button class="filter-tab pb-3 px-1 text-sm font-semibold border-b-2 border-orange-600 text-orange-600 whitespace-nowrap" onclick="setFilter('all',this)">All <span id="cnt-all" class="ml-1.5 bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs font-bold"></span></button>
+      <button class="filter-tab pb-3 px-1 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-800 whitespace-nowrap" onclick="setFilter('Pending',this)">Pending <span id="cnt-Pending" class="ml-1.5 bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs font-bold"></span></button>
+      <button class="filter-tab pb-3 px-1 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-800 whitespace-nowrap" onclick="setFilter('Accepted',this)">Accepted <span id="cnt-Accepted" class="ml-1.5 bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs font-bold"></span></button>
+      <button class="filter-tab pb-3 px-1 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-800 whitespace-nowrap" onclick="setFilter('Preparing',this)">Preparing <span id="cnt-Preparing" class="ml-1.5 bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs font-bold"></span></button>
+      <button class="filter-tab pb-3 px-1 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-800 whitespace-nowrap" onclick="setFilter('Completed',this)">Completed <span id="cnt-Completed" class="ml-1.5 bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs font-bold"></span></button>
+      <button class="filter-tab pb-3 px-1 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-800 whitespace-nowrap" onclick="setFilter('Rejected',this)">Rejected <span id="cnt-Rejected" class="ml-1.5 bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs font-bold"></span></button>
+    </div>
+
+    <div id="orders-loading" class="text-center py-16 text-gray-400"><span class="spinner"></span>Loading orders…</div>
+    <div class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-5" id="orders-grid"></div>
+    <p id="orders-empty" class="hidden text-center text-gray-400 py-16 text-sm">No orders found.</p>
+  </main>
+</div>
+
+<!-- Edit Modal -->
+<div id="edit-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+  <div class="absolute inset-0 modal-bg" onclick="closeEditModal()"></div>
+  <div class="relative bg-white rounded-2xl overlay-shadow w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl">
+      <h3 class="font-bold text-gray-900 text-lg" id="edit-modal-title">Edit Order</h3>
+      <button onclick="closeEditModal()" class="p-1.5 hover:bg-gray-100 rounded-lg"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="p-6 space-y-4">
+      <input type="hidden" id="edit-id"/>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Customer Name</label>
+          <input id="edit-customer" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="Customer name"/>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Status</label>
+          <select id="edit-status" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm">
+            <option>Pending</option><option>Accepted</option><option>Preparing</option><option>Completed</option><option>Rejected</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Notes / Table</label>
+        <input id="edit-notes" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="Table 4…"/>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">Items</label>
+        <div id="edit-items" class="space-y-1 bg-gray-50 rounded-xl p-3 max-h-40 overflow-y-auto text-sm text-gray-700"></div>
+      </div>
+      <div class="bg-orange-50 rounded-xl p-4 text-sm">
+        <div class="flex justify-between text-gray-600 mb-1"><span>Subtotal</span><span id="edit-sub"></span></div>
+        <div class="flex justify-between text-gray-600 mb-1"><span>Tax (10%)</span><span id="edit-tax"></span></div>
+        <div class="flex justify-between font-bold text-gray-900"><span>Total</span><span id="edit-total"></span></div>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button onclick="closeEditModal()" class="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold hover:bg-gray-50">Cancel</button>
+        <button onclick="saveEditedOrder()" class="flex-1 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Modal -->
+<div id="create-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+  <div class="absolute inset-0 modal-bg" onclick="closeCreateModal()"></div>
+  <div class="relative bg-white rounded-2xl overlay-shadow w-full max-w-md max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl">
+      <h3 class="font-bold text-gray-900 text-lg">Quick Create Order</h3>
+      <button onclick="closeCreateModal()" class="p-1.5 hover:bg-gray-100 rounded-lg"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="p-6 space-y-4">
+      <div>
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Customer Name *</label>
+        <input id="new-customer" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="Enter customer name"/>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Notes / Table</label>
+        <input id="new-notes" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="Table 4, delivery…"/>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">Select Items</label>
+        <div class="grid grid-cols-2 gap-2 max-h-52 overflow-y-auto" id="create-items-grid"></div>
+      </div>
+      <div id="create-summary" class="hidden bg-orange-50 rounded-xl p-4 text-sm">
+        <div class="font-semibold text-gray-900 mb-2">Selected items:</div>
+        <div id="create-cart-list" class="space-y-1 text-gray-600"></div>
+        <div class="border-t border-orange-200 mt-2 pt-2 font-bold text-gray-900 flex justify-between">
+          <span>Total</span><span id="create-total">$0.00</span>
+        </div>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button onclick="closeCreateModal()" class="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold hover:bg-gray-50">Cancel</button>
+        <button onclick="submitCreateOrder()" class="flex-1 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700">Place Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="delete-modal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+  <div class="absolute inset-0 modal-bg" onclick="closeDeleteModal()"></div>
+  <div class="relative bg-white rounded-2xl overlay-shadow w-full max-w-sm p-6 text-center">
+    <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <span class="material-symbols-outlined text-red-600" style="font-size:28px;">delete_forever</span>
+    </div>
+    <h3 class="font-bold text-gray-900 text-lg mb-2">Confirm Delete</h3>
+    <p class="text-gray-500 text-sm mb-6" id="delete-msg">Are you sure?</p>
+    <div class="flex gap-3">
+      <button onclick="closeDeleteModal()" class="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold hover:bg-gray-50">Cancel</button>
+      <button id="delete-confirm-btn" class="flex-1 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+// ── STATE ──
+let allOrders = [], menuItems = [], currentFilter = 'all', quickCart = {}, deleteAction = null;
+
+// ── UTILS ──
+const fmt = n => '$' + n.toFixed(2);
+const total = o => o.items.reduce((s, i) => s + i.price * (i.qty || 1), 0);
+const initials = n => n.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+const avC = ['bg-orange-100 text-orange-700','bg-blue-100 text-blue-700','bg-green-100 text-green-700','bg-purple-100 text-purple-700','bg-pink-100 text-pink-700','bg-teal-100 text-teal-700'];
+const avColor = n => avC[n.charCodeAt(0) % avC.length];
+const bMap = { Pending:'badge-pending', Accepted:'badge-accepted', Preparing:'badge-preparing', Completed:'badge-completed', Rejected:'badge-rejected' };
+const badge = s => `
+  <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${bMap[s] || 'badge-pending'} uppercase tracking-wide">
+    ${s}
+  </span>
+`;
+const nextLbl = { Pending:'Accept', Accepted:'Start Prep', Preparing:'Complete' };
+
+// ── TOAST ──
+function showToast(msg, type = 'info') {
+  const tc = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${
+  type === 'success'
+    ? 'success'
+    : type === 'error'
+    ? 'error'
+    : ''
+}`;
+ t.innerHTML = `
+  <span class="material-symbols-outlined"
+    style="font-size:18px;font-variation-settings:'FILL' 1">
+    ${
+      type === 'success'
+        ? 'check_circle'
+        : type === 'error'
+        ? 'error'
+        : 'info'
+    }
+  </span>
+  ${msg}
+`;
+  tc.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(20px)'; t.style.transition='all .3s'; setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+// ── SIDEBAR ──
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('hidden');
+}
+
+// ── RENDER ──
+function renderOrders() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = allOrders.filter(o => {
+    const mf = currentFilter === 'all' || o.status === currentFilter;
+    const ms = !q || o.customer.toLowerCase().includes(q) || String(o.id).toLowerCase().includes(q);
+    return mf && ms;
+  });
+  ['all','Pending','Accepted','Preparing','Completed','Rejected'].forEach(k => {
+    const el = document.getElementById('cnt-' + k);
+    if (el) el.textContent = k === 'all' ? allOrders.length : allOrders.filter(o => o.status === k).length;
+  });
+  document.getElementById('orders-loading').classList.add('hidden');
+  const grid = document.getElementById('orders-grid');
+  const empty = document.getElementById('orders-empty');
+  if (!filtered.length) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  grid.innerHTML = filtered.map(o => {
+    const t = total(o);
+    const items = o.items
+  .map(i => `${i.qty || 1}× ${i.name}`)
+  .join(', ');
+
+    return `<div class="bg-white rounded-2xl p-5 border border-gray-100 soft-shadow hover:border-orange-200 transition-colors flex flex-col fade-in">
+      <div class="flex justify-between items-start mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full ${avColor(o.customer)} flex items-center justify-center font-bold">${initials(o.customer)}</div>
+          <div><h3 class="font-bold text-gray-900 text-sm">${o.customer}</h3><p class="text-xs text-gray-400 font-mono">#${o.id}</p></div>
+        </div>
+        ${badge(o.status)}
+      </div>
+      <div class="flex-1 mb-4">
+        <p class="text-xs text-gray-500 mb-1">${o.notes||''}</p>
+        <p class="text-xs text-gray-600">${items}</p>
+      </div>
+      <div class="border-t border-gray-100 pt-4">
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-xs text-gray-400">${o.time}</span>
+          <span class="font-bold text-gray-900 text-sm">${fmt(t)}</span>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="openEditModal('${o.id}')" class="flex-1 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-1 transition-colors">
+            <span class="material-symbols-outlined" style="font-size:15px;">edit</span> Edit
+          </button>
+          ${nextLbl[o.status] ? `<button onclick="quickAdvance('${o.id}')" class="flex-1 py-2 bg-orange-600 text-white rounded-lg text-xs font-semibold hover:bg-orange-700 flex items-center justify-center gap-1 transition-colors">
+            <span class="material-symbols-outlined" style="font-size:15px;">arrow_forward</span> ${nextLbl[o.status]}
+          </button>` : ''}
+          <button onclick="confirmDelete('${o.id}')" class="py-2 px-3 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors">
+            <span class="material-symbols-outlined" style="font-size:15px;">delete</span>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-tab').forEach(b => {
+    b.classList.remove('border-orange-600','text-orange-600','font-semibold');
+    b.classList.add('border-transparent','text-gray-500','font-medium');
+  });
+  btn.classList.add('border-orange-600','text-orange-600','font-semibold');
+  btn.classList.remove('border-transparent','text-gray-500','font-medium');
+  renderOrders();
+}
+
+// ── QUICK ADVANCE ──
+async function quickAdvance(id) {
+  const o = allOrders.find(o => String(o.id) === String(id));
+  if (!o) return;
+  const map = { Pending:'Accepted', Accepted:'Preparing', Preparing:'Completed' };
+  if (!map[o.status]) return;
+  const newStatus = map[o.status];
+  try {
+    const updated = await api.updateOrder(id, { status: newStatus });
+    o.status = updated.status || newStatus;
+  } catch { o.status = newStatus; }
+  renderOrders();
+  showToast(`Order #${id} → ${o.status}`, 'success');
+}
+
+// ── EDIT MODAL ──
+function openEditModal(id) {
+  const o = allOrders.find(o => String(o.id) === String(id));
+  if (!o) return;
+  document.getElementById('edit-id').value = o.id;
+ document.getElementById('edit-modal-title').textContent =
+  `Edit Order #${o.id}`;
+  document.getElementById('edit-customer').value = o.customer;
+  document.getElementById('edit-status').value = o.status;
+  document.getElementById('edit-notes').value = o.notes || '';
+  const sub = total(o);
+  document.getElementById('edit-sub').textContent = fmt(sub);
+  document.getElementById('edit-tax').textContent = fmt(sub * .1);
+  document.getElementById('edit-total').textContent = fmt(sub * 1.1);
+  document.getElementById('edit-items').innerHTML =
+  o.items.map(i => `
+    <div class="flex justify-between py-0.5">
+      <span>${i.qty || 1}× ${i.name}</span>
+      <span class="font-medium">
+        ${fmt(i.price * (i.qty || 1))}
+      </span>
+    </div>
+  `).join('');
+  document.getElementById('edit-modal').classList.remove('hidden');
+}
+function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
+
+async function saveEditedOrder() {
+  const id = document.getElementById('edit-id').value;
+  const data = {
+    customer: document.getElementById('edit-customer').value.trim(),
+    status:   document.getElementById('edit-status').value,
+    notes:    document.getElementById('edit-notes').value,
+  };
+  if (!data.customer) { showToast('Customer name required', 'error'); return; }
+  try {
+    const updated = await api.updateOrder(id, data);
+    const idx = allOrders.findIndex(o => String(o.id) === String(id));
+    if (idx > -1) allOrders[idx] = { ...allOrders[idx], ...updated };
+  } catch {
+    const idx = allOrders.findIndex(o => String(o.id) === String(id));
+    if (idx > -1) allOrders[idx] = { ...allOrders[idx], ...data };
+  }
+  closeEditModal(); renderOrders(); showToast('Order updated!', 'success');
+}
+
+// ── CREATE MODAL ──
+function openCreateModal() {
+  quickCart = {};
+  document.getElementById('new-customer').value = '';
+  document.getElementById('new-notes').value = '';
+  document.getElementById('create-summary').classList.add('hidden');
+  document.getElementById('create-items-grid').innerHTML = menuItems.filter(m => m.available).map(m =>
+    `<button id="qi-${m.id}" onclick="toggleCartItem(${JSON.stringify(m.id)})" class="flex items-center gap-2 p-2 border border-gray-200 rounded-xl text-xs font-medium hover:border-orange-400 hover:bg-orange-50 transition-colors text-left">
+      <span class="text-base">${m.emoji}</span>
+      <div class="min-w-0 flex-1"><p class="truncate">${m.name}</p><p class="text-gray-400 font-medium">$${m.price.toFixed(2)}</p></div>
+    </button>`).join('');
+  document.getElementById('create-modal').classList.remove('hidden');
+}
+function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
+
+function toggleCartItem(id) {
+  const m = menuItems.find(m => String(m.id) === String(id));
+  if (!m) return;
+  const btn = document.getElementById('qi-' + id);
+  if (quickCart[id]) { delete quickCart[id]; btn.classList.remove('border-orange-500','bg-orange-50'); }
+  else { quickCart[id] = { ...m, qty: 1 }; btn.classList.add('border-orange-500','bg-orange-50'); }
+  const items = Object.values(quickCart);
+  const summary = document.getElementById('create-summary');
+  if (!items.length) { summary.classList.add('hidden'); return; }
+  summary.classList.remove('hidden');
+  document.getElementById('create-cart-list').innerHTML =
+  items.map(i => `
+    <div class="flex justify-between">
+      <span>${i.name}</span>
+      <span>$${i.price.toFixed(2)}</span>
+    </div>
+  `).join('');
+  document.getElementById('create-total').textContent = '$' + (items.reduce((s, i) => s + i.price, 0) * 1.1).toFixed(2);
+}
+
+async function submitCreateOrder() {
+  const customer = document.getElementById('new-customer').value.trim();
+  if (!customer) { showToast('Customer name required', 'error'); return; }
+  const items = Object.values(quickCart);
+  if (!items.length) { showToast('Select at least one item', 'error'); return; }
+  const newOrder = {
+    id: `FDEZ-${Date.now()}`, customer, status: 'Pending', time: 'Just now',
+    notes: document.getElementById('new-notes').value,
+    items: items.map(i => ({ name: i.name, qty: 1, price: i.price }))
+  };
+  try {
+    const created = await api.createOrder(newOrder);
+    allOrders.unshift(created);
+  } catch { allOrders.unshift(newOrder); }
+  closeCreateModal();
+renderOrders();
+showToast(`Order placed for ${customer}!`, 'success');
+}
+
+// ── DELETE MODAL ──
+function confirmDelete(id) {
+  document.getElementById('delete-msg').textContent =
+  `Delete order #${id}? This cannot be undone.`;
+   deleteAction = async () => {
+    await api.deleteOrder(id);
+    allOrders = allOrders.filter(o => String(o.id) !== String(id));
+    renderOrders(); showToast('Order deleted.', 'success');
+  };
+  document.getElementById('delete-confirm-btn').onclick = () => { closeDeleteModal(); deleteAction && deleteAction(); };
+  document.getElementById('delete-modal').classList.remove('hidden');
+}
+function closeDeleteModal() { document.getElementById('delete-modal').classList.add('hidden'); }
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeEditModal(); closeCreateModal(); closeDeleteModal(); } });
+
+// ── INIT — charge via api.js (REST → fallback orders.json) ──
+async function init() {
+  try {
+    [allOrders, menuItems] = await Promise.all([api.getOrders(), api.getMenu()]);
+    showToast('Orders loaded ✓', 'success');
+  } catch {
+    showToast('Erreur de chargement', 'error');
+  }
+  renderOrders();
+}
+init();
+</script>
+</body>
+</html>
