@@ -1,92 +1,146 @@
-// ============================================================
-//  api.js  —  Foodiez REST API helper (json-server @ :3000)
-// ============================================================
+// ── api.js — Foodiez API layer ──
+// Tries real REST API first, falls back to orders.json
 
-const API = 'http://localhost:3000';
+const API_URL = 'http://localhost:3000';
 
-// ---------- Fonction helper pour envoyer des requêtes ----------
-async function request(url, method = 'GET', data = null) {
-  const options = {
-    method: method,
+// Generic request helper
+async function req(url, method = 'GET', data = null) {
+
+  const opts = {
+    method
   };
 
   if (data) {
-    options.headers = { 'Content-Type': 'application/json' };
-    options.body = JSON.stringify(data);
+
+    opts.headers = {
+      'Content-Type': 'application/json'
+    };
+
+    opts.body = JSON.stringify(data);
   }
 
-  const response = await fetch(url, options);
-  return response.json();
+  const res = await fetch(url, opts);
+
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`);
+  }
+
+  return res.json();
 }
 
-// ---------- ORDERS ----------
+// Load fallback data from local JSON
+async function loadFallback() {
 
-async function getOrders() {
-  return request(`${API}/orders`);
+  const res = await fetch('./orders.json');
+
+  if (!res.ok) {
+    throw new Error('Unable to load orders.json');
+  }
+
+  return res.json(); // { orders, menu }
 }
 
-async function getOrder(id) {
-  return request(`${API}/orders/${id}`);
-}
-
-async function createOrder(data) {
-  return request(`${API}/orders`, 'POST', data);
-}
-
-async function updateOrder(id, data) {
-  return request(`${API}/orders/${id}`, 'PATCH', data);
-}
-
-async function deleteOrder(id) {
-  const response = await fetch(`${API}/orders/${id}`, { method: 'DELETE' });
-  return response;
-}
-
-// ---------- MENU ----------
-
-async function getMenu() {
-  return request(`${API}/menu`);
-}
-
-async function getMenuItem(id) {
-  return request(`${API}/menu/${id}`);
-}
-
-async function createMenuItem(data) {
-  return request(`${API}/menu`, 'POST', data);
-}
-
-async function updateMenuItem(id, data) {
-  return request(`${API}/menu/${id}`, 'PATCH', data);
-}
-
-async function deleteMenuItem(id) {
-  const response = await fetch(`${API}/menu/${id}`, { method: 'DELETE' });
-  return response;
-}
-
-// ---------- SETTINGS ----------
-
-async function getSettings() {
-  return request(`${API}/settings/1`);
-}
-
-async function updateSettings(data) {
-  return request(`${API}/settings/1`, 'PATCH', data);
-}
-
-// ---------- Export de toutes les fonctions ----------
+// API object
 const api = {
-  getOrders,
-  getOrder,
-  createOrder,
-  updateOrder,
-  deleteOrder,
-  getMenu,
-  getMenuItem,
-  createMenuItem,
-  updateMenuItem,
-  deleteMenuItem,
-  getSettings,
-  updateSettings,
+
+  // Get orders
+  async getOrders() {
+
+    try {
+
+      return await req(`${API_URL}/orders`);
+
+    } catch (err) {
+
+      console.warn('REST API unavailable → fallback orders.json');
+
+      const data = await loadFallback();
+
+      return data.orders || [];
+    }
+  },
+
+  // Get menu
+  async getMenu() {
+
+    try {
+
+      return await req(`${API_URL}/menu`);
+
+    } catch (err) {
+
+      console.warn('REST API unavailable → fallback orders.json');
+
+      const data = await loadFallback();
+
+      return data.menu || [];
+    }
+  },
+
+  // Create order
+  async createOrder(data) {
+
+    try {
+
+      return await req(
+        `${API_URL}/orders`,
+        'POST',
+        data
+      );
+
+    } catch (err) {
+
+      console.warn('Offline mode → returning local order');
+
+      return data;
+    }
+  },
+
+  // Update order
+  async updateOrder(id, data) {
+
+    try {
+
+      return await req(
+        `${API_URL}/orders/${id}`,
+        'PATCH',
+        data
+      );
+
+    } catch (err) {
+
+      console.warn('Offline mode → local update only');
+
+      return {
+        id,
+        ...data
+      };
+    }
+  },
+
+  // Delete order
+  async deleteOrder(id) {
+
+    try {
+
+      const res = await fetch(
+        `${API_URL}/orders/${id}`,
+        {
+          method: 'DELETE'
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      return true;
+
+    } catch (err) {
+
+      console.warn('Offline mode → delete skipped');
+
+      return false;
+    }
+  }
 };
