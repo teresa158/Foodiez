@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Foodiez — Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  body{font-family:'Inter',sans-serif;}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;font-size:20px;}
+  .soft-shadow{box-shadow:0 1px 3px rgba(0,0,0,.05),0 1px 2px rgba(0,0,0,.03);}
+  #sidebar{width:280px;transition:transform .3s ease;}
+  #main-content{margin-left:280px;}
+  @media(max-width:1024px){#sidebar{transform:translateX(-100%);position:fixed;z-index:50;}#sidebar.open{transform:translateX(0);}#main-content{margin-left:0;}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+  .fade-in{animation:fadeIn .25s ease forwards;}
+  .badge-pending{background:#eff6ff;color:#1d4ed8;}
+  .badge-accepted{background:#f0fdf4;color:#15803d;}
+  .badge-completed{background:#ecfdf5;color:#065f46;}
+  .badge-rejected{background:#fef2f2;color:#991b1b;}
+  .badge-preparing{background:#fff7ed;color:#c2410c;}
+  .bar-tooltip{display:none;position:absolute;top:-36px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;font-size:11px;font-weight:600;padding:4px 8px;border-radius:6px;white-space:nowrap;z-index:10;}
+  .bar:hover .bar-tooltip{display:block;}
+  .bar:hover .bar-fill{filter:brightness(.9);}
+  ::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:99px;}
+  #toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+  .toast{display:flex;align-items:center;gap:10px;background:#1f2937;color:#fff;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:500;animation:slideIn .3s ease;min-width:260px;pointer-events:auto;}
+  .toast.success{background:#059669;}.toast.error{background:#dc2626;}
+  tbody tr:hover{background:#f9fafb;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .spinner{width:22px;height:22px;border:3px solid #e5e7eb;border-top-color:#ea580c;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:8px;vertical-align:middle;}
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden" onclick="toggleSidebar()"></div>
+
+<aside id="sidebar" class="fixed left-0 top-0 h-full bg-white border-r border-gray-200 flex flex-col p-4 z-50">
+  <div class="flex items-center gap-3 mb-8 px-2">
+    <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
+      <span class="material-symbols-outlined text-white" style="font-variation-settings:'FILL' 1;font-size:22px;">restaurant</span>
+    </div>
+    <div>
+      <h1 class="text-xl font-black text-orange-600 tracking-tight">Foodiez</h1>
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Restaurant Admin</p>
+    </div>
+  </div>
+  <nav class="flex-1 space-y-1">
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm bg-orange-50 text-orange-600 border-r-2 border-orange-600">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">dashboard</span> Dashboard
+    </a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all"><span class="material-symbols-outlined">receipt_long</span> Orders</a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all"><span class="material-symbols-outlined">add_shopping_cart</span> New Order</a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all"><span class="material-symbols-outlined">menu_book</span> Menu</a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-100 font-medium text-sm transition-all"><span class="material-symbols-outlined">settings</span> Settings</a>
+  </nav>
+  <div class="mt-auto mb-4 p-4 bg-orange-50 rounded-xl border border-orange-100">
+    <p class="text-xs font-bold text-orange-800 mb-1 uppercase tracking-wider">Pro Plan</p>
+    <p class="text-xs text-orange-700 mb-3">Manage up to 5 locations.</p>
+    <button class="w-full py-2 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition-colors">Upgrade Now</button>
+  </div>
+  <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-sm">CJ</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-bold truncate" id="sidebar-manager-name">Chef Julian</p>
+        <p class="text-xs text-gray-500">Store Manager</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<div id="main-content" class="min-h-screen flex flex-col">
+  <header class="fixed top-0 right-0 lg:left-[280px] left-0 h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 z-30 soft-shadow">
+    <button class="lg:hidden p-2 text-gray-500 hover:bg-gray-50 rounded-lg" onclick="toggleSidebar()">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    <div class="flex items-center bg-gray-50 rounded-xl px-3 py-2 border border-gray-100 w-full max-w-sm">
+      <span class="material-symbols-outlined text-gray-400" style="font-size:18px;">search</span>
+      <input class="bg-transparent border-none outline-none text-sm w-full ml-2 placeholder:text-gray-400" placeholder="Search orders, customers..." type="text"/>
+    </div>
+    <div class="flex items-center gap-3 ml-4">
+      <button class="relative p-2 text-gray-500 hover:bg-gray-50 rounded-full" onclick="showToast('3 new notifications!','info')">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-orange-600 rounded-full border-2 border-white"></span>
+      </button>
+      <div class="h-8 w-px bg-gray-200"></div>
+      <div class="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-sm">CJ</div>
+    </div>
+  </header>
+
+  <main class="mt-16 p-6 flex-1 max-w-[1440px] mx-auto w-full fade-in">
+    <div class="flex items-end justify-between mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Kitchen Dashboard</h2>
+        <p class="text-sm text-gray-500 mt-0.5">Real-time oversight of your restaurant.</p>
+      </div>
+      <button onclick="showToast('New order page coming soon!','info')" class="flex items-center gap-2 px-4 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors">
+        <span class="material-symbols-outlined" style="font-size:18px;">add</span> New Order
+      </button>
+    </div>
+
+    <div id="stats-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+      <div class="col-span-5 py-6 text-center text-gray-400"><span class="spinner"></span>Loading stats…</div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6">
+      <!-- Bar chart -->
+      <div class="col-span-12 lg:col-span-8 bg-white rounded-2xl border border-gray-100 soft-shadow p-6">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <h3 class="font-semibold text-gray-900">Restaurant Performance</h3>
+            <p class="text-xs text-gray-500 mt-0.5">Order volume — past 7 days</p>
+          </div>
+          <select class="bg-gray-50 border border-gray-100 rounded-lg text-xs font-semibold px-3 py-2 outline-none">
+            <option>Last 7 Days</option><option>Last 30 Days</option>
+          </select>
+        </div>
+        <div class="flex items-end gap-3 h-48 w-full px-2" id="bar-chart"></div>
+        <div class="flex justify-between mt-3 px-2 text-[11px] font-bold text-gray-400">
+          <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="col-span-12 lg:col-span-4 bg-white rounded-2xl border border-gray-100 soft-shadow p-6">
+        <h3 class="font-semibold text-gray-900 mb-4">Recent Activity</h3>
+        <div id="recent-activity"><span class="spinner"></span><span class="text-sm text-gray-400">Loading…</span></div>
+      </div>
+
+      <!-- Live Orders table -->
+      <div class="col-span-12 lg:col-span-8 bg-white rounded-2xl border border-gray-100 soft-shadow">
+        <div class="flex justify-between items-center p-6 border-b border-gray-100">
+          <h3 class="font-semibold text-gray-900">Live Orders</h3>
+          <a href="#" class="text-orange-600 text-xs font-semibold hover:underline">View All →</a>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-100 bg-gray-50/50">
+                <th class="text-left px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Order ID</th>
+                <th class="text-left px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Customer</th>
+                <th class="text-left px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                <th class="text-right px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Total</th>
+              </tr>
+            </thead>
+            <tbody id="live-orders-body">
+              <tr><td colspan="4" class="px-6 py-8 text-center text-gray-400"><span class="spinner"></span>Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Top Items -->
+      <div class="col-span-12 lg:col-span-4 bg-white rounded-2xl border border-gray-100 soft-shadow p-6">
+        <h3 class="font-semibold text-gray-900 mb-4">Top Selling Items</h3>
+        <div id="top-items"><span class="spinner"></span><span class="text-sm text-gray-400">Loading…</span></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────
+const ORDERS = [
+  {id:'FDEZ-9021',customer:'John Doe',status:'Pending',time:'2 min ago',notes:'Table 4',items:[{name:'Grilled Salmon',qty:1,price:18.99},{name:'Sparkling Water',qty:2,price:3.50}]},
+  {id:'FDEZ-9022',customer:'Maria Garcia',status:'Accepted',time:'8 min ago',notes:'Table 2',items:[{name:'Chicken Burger',qty:2,price:14.50},{name:'French Fries',qty:1,price:5.99}]},
+  {id:'FDEZ-9023',customer:'Alex Kim',status:'Preparing',time:'15 min ago',notes:'Delivery',items:[{name:'Margherita Pizza',qty:1,price:16.50},{name:'Tiramisu',qty:2,price:7.50}]},
+  {id:'FDEZ-9024',customer:'Sara Patel',status:'Completed',time:'22 min ago',notes:'Table 7',items:[{name:'Caesar Salad',qty:1,price:12.00},{name:'Iced Tea',qty:2,price:4.00}]},
+  {id:'FDEZ-9025',customer:'Tom Wilson',status:'Rejected',time:'35 min ago',notes:'Table 1',items:[{name:'Beef Steak',qty:1,price:28.00}]},
+  {id:'FDEZ-9026',customer:'Emma Brown',status:'Pending',time:'1 min ago',notes:'Table 9',items:[{name:'Veggie Wrap',qty:2,price:11.50},{name:'Lemonade',qty:2,price:4.50}]},
+  {id:'FDEZ-9027',customer:'James Lee',status:'Accepted',time:'5 min ago',notes:'Table 3',items:[{name:'Pasta Carbonara',qty:1,price:15.00},{name:'Garlic Bread',qty:1,price:4.00}]},
+  {id:'FDEZ-9028',customer:'Olivia Chen',status:'Preparing',time:'12 min ago',notes:'Table 5',items:[{name:'Sushi Platter',qty:1,price:32.00},{name:'Miso Soup',qty:1,price:5.00}]},
+];
+
+const SETTINGS = {
+  restaurantName:'Foodiez Restaurant', managerName:'Chef Julian',
+  managerEmail:'julian@foodiez.com', phone:'+1 (555) 123-4567',
+  address:'123 Main Street, Food City, FC 10001',
+  openTime:'08:00', closeTime:'22:00',
+  notifications:{newOrder:true,statusUpdates:true,dailySummary:false,lowStock:true}
+};
+
+// ── API (localStorage-backed, falls back to built-in data) ────────────
+const api = {
+  _load(key, fallback) {
+    try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
+  },
+  _save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} },
+  getOrders()       { return this._load('fdz_orders', ORDERS); },
+  getSettings()     { return this._load('fdz_settings', SETTINGS); },
+  updateOrder(id, data) {
+    const orders = this.getOrders();
+    const o = orders.find(o => o.id === id);
+    if (o) { Object.assign(o, data); this._save('fdz_orders', orders); }
+    return o;
+  },
+  createOrder(order) {
+    const orders = this.getOrders();
+    orders.unshift(order);
+    this._save('fdz_orders', orders);
+    return order;
+  },
+  updateSettings(data) {
+    const s = { ...this.getSettings(), ...data };
+    this._save('fdz_settings', s);
+    return s;
+  }
+};
+
+// ── Helpers ───────────────────────────────────────────────────────────
+const fmt   = n => '$' + n.toFixed(2);
+const total = o => o.items.reduce((s,i) => s + i.price * (i.qty || 1), 0);
+const initials = n => n.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+const avC = ['bg-orange-100 text-orange-700','bg-blue-100 text-blue-700','bg-green-100 text-green-700','bg-purple-100 text-purple-700','bg-pink-100 text-pink-700','bg-teal-100 text-teal-700'];
+const avColor = n => avC[n.charCodeAt(0) % avC.length];
+const bMap = {Pending:'badge-pending',Accepted:'badge-accepted',Preparing:'badge-preparing',Completed:'badge-completed',Rejected:'badge-rejected'};
+const badge = s => `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${bMap[s]||'badge-pending'} uppercase tracking-wide">${s}</span>`;
+const emojiMap = {'Grilled Salmon':'🐟','Chicken Burger':'🍔','Margherita Pizza':'🍕','Caesar Salad':'🥗','Beef Steak':'🥩','Pasta Carbonara':'🍝','French Fries':'🍟','Tiramisu':'🎂','Sparkling Water':'💧','Iced Tea':'🍵','Lemonade':'🍋','Veggie Wrap':'🌯','Sushi Platter':'🍱','Garlic Bread':'🥖','Miso Soup':'🍲','Cheesecake':'🍰'};
+
+function showToast(msg, type = 'info') {
+  const tc = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type === 'success' ? 'success' : type === 'error' ? 'error' : ''}`;
+  const icon = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info';
+  t.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px;font-variation-settings:'FILL' 1">${icon}</span>${msg}`;
+  tc.appendChild(t);
+  setTimeout(() => { t.style.cssText += 'opacity:0;transform:translateX(20px);transition:all .3s'; setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('hidden');
+}
+
+// ── Render functions ──────────────────────────────────────────────────
+function renderStats(orders) {
+  const defs = [
+    {label:'Total Orders',  value:orders.length,                                          icon:'analytics',       color:'gray',   badge:'+12%', bc:'text-green-600 bg-green-50'},
+    {label:'Pending',       value:orders.filter(o=>o.status==='Pending').length,          icon:'pending_actions', color:'orange', badge:'Urgent',bc:'text-orange-600 bg-orange-50'},
+    {label:'Accepted',      value:orders.filter(o=>o.status==='Accepted').length,         icon:'check_circle',    color:'green',  badge:'',     bc:''},
+    {label:'Rejected',      value:orders.filter(o=>o.status==='Rejected').length,         icon:'cancel',          color:'red',    badge:'',     bc:''},
+    {label:'Completed',     value:orders.filter(o=>o.status==='Completed').length,        icon:'task_alt',        color:'blue',   badge:'',     bc:''},
+  ];
+  document.getElementById('stats-grid').innerHTML = defs.map(s => `
+    <div class="bg-white p-4 rounded-xl border border-gray-100 soft-shadow hover:border-orange-200 transition-colors">
+      <div class="flex justify-between items-start mb-3">
+        <div class="p-2 bg-${s.color}-50 rounded-lg text-${s.color}-600"><span class="material-symbols-outlined" style="font-size:20px;">${s.icon}</span></div>
+        ${s.badge ? `<span class="text-xs font-bold ${s.bc} px-2 py-0.5 rounded-full">${s.badge}</span>` : ''}
+      </div>
+      <p class="text-xs font-medium text-gray-500">${s.label}</p>
+      <h3 class="text-2xl font-bold text-gray-900 mt-1">${s.value}</h3>
+    </div>`).join('');
+}
+
+function renderChart() {
+  const data = [42,68,55,89,63,97,47], max = Math.max(...data);
+  document.getElementById('bar-chart').innerHTML = data.map(v => `
+    <div class="bar relative flex-1 flex flex-col items-center" style="align-self:flex-end;height:100%;">
+      <div class="bar-tooltip">${v} orders</div>
+      <div class="bar-fill" style="height:${Math.round((v/max)*100)}%;width:100%;border-radius:6px 6px 0 0;background:rgba(234,88,12,${(0.2+(v/max)*0.8).toFixed(2)});transition:height .6s;"></div>
+    </div>`).join('');
+}
+
+function renderActivity(orders) {
+  document.getElementById('recent-activity').innerHTML = orders.slice(0,5).map(o => `
+    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+      <div class="w-8 h-8 rounded-full ${avColor(o.customer)} flex items-center justify-center text-xs font-bold flex-shrink-0">${initials(o.customer)}</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold truncate">${o.customer}</p>
+        <p class="text-xs text-gray-400">#${o.id} · ${o.time}</p>
+      </div>
+      ${badge(o.status)}
+    </div>`).join('');
+}
+
+function renderLiveOrders(orders) {
+  const live = orders.filter(o => ['Pending','Accepted','Preparing'].includes(o.status)).slice(0,6);
+  document.getElementById('live-orders-body').innerHTML = live.length
+    ? live.map(o => `
+      <tr class="border-b border-gray-50 cursor-pointer">
+        <td class="px-6 py-4 text-xs font-mono font-bold text-gray-500">#${o.id}</td>
+        <td class="px-6 py-4"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded-full ${avColor(o.customer)} flex items-center justify-center text-xs font-bold">${initials(o.customer)}</div><span class="font-medium text-gray-900">${o.customer}</span></div></td>
+        <td class="px-6 py-4">${badge(o.status)}</td>
+        <td class="px-6 py-4 text-right font-semibold">${fmt(total(o))}</td>
+      </tr>`).join('')
+    : `<tr><td colspan="4" class="px-6 py-8 text-center text-gray-400">No live orders</td></tr>`;
+}
+
+function renderTopItems(orders) {
+  const counts = {};
+  orders.forEach(o => o.items.forEach(i => { counts[i.name] = (counts[i.name] || 0) + (i.qty || 1); }));
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,5);
+  const maxQ = sorted[0]?.[1] || 1;
+  document.getElementById('top-items').innerHTML = sorted.map(([name, qty]) => `
+    <div class="flex items-center gap-3 mb-3">
+      <span class="text-base">${emojiMap[name] || '🍽️'}</span>
+      <div class="flex-1">
+        <div class="flex justify-between text-sm mb-1">
+          <span class="font-medium text-gray-700">${name}</span>
+          <span class="text-gray-400 text-xs font-semibold">${qty}x</span>
+        </div>
+        <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div class="h-full bg-orange-500 rounded-full" style="width:${Math.round((qty/maxQ)*100)}%"></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────
+function init() {
+  renderChart();
+  const orders   = api.getOrders();
+  const settings = api.getSettings();
+  document.getElementById('sidebar-manager-name').textContent = settings.managerName || 'Chef Julian';
+  renderStats(orders);
+  renderActivity(orders);
+  renderLiveOrders(orders);
+  renderTopItems(orders);
+  showToast('Dashboard loaded ✓', 'success');
+}
+init();
+</script>
+</body>
+</html>

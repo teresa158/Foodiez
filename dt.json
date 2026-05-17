@@ -1,0 +1,27 @@
+{
+  "orders": [
+    { "id": "FDEZ-9021", "customer": "John Doe",     "status": "Pending",   "time": "2 min ago",  "notes": "Table 4", "items": [{"name":"Grilled Salmon","qty":1,"price":18.99},{"name":"Sparkling Water","qty":2,"price":3.50}] },
+    { "id": "FDEZ-9022", "customer": "Maria Garcia", "status": "Accepted",  "time": "8 min ago",  "notes": "Table 2", "items": [{"name":"Chicken Burger","qty":2,"price":14.50},{"name":"French Fries","qty":1,"price":5.99}] },
+    { "id": "FDEZ-9023", "customer": "Alex Kim",     "status": "Preparing", "time": "15 min ago", "notes": "Delivery","items": [{"name":"Margherita Pizza","qty":1,"price":16.50},{"name":"Tiramisu","qty":2,"price":7.50}] },
+    { "id": "FDEZ-9024", "customer": "Sara Patel",   "status": "Completed", "time": "22 min ago", "notes": "Table 7", "items": [{"name":"Caesar Salad","qty":1,"price":12.00},{"name":"Iced Tea","qty":2,"price":4.00}] },
+    { "id": "FDEZ-9025", "customer": "Tom Wilson",   "status": "Rejected",  "time": "35 min ago", "notes": "Table 1", "items": [{"name":"Beef Steak","qty":1,"price":28.00}] },
+    { "id": "FDEZ-9026", "customer": "Emma Brown",   "status": "Pending",   "time": "1 min ago",  "notes": "Table 9", "items": [{"name":"Veggie Wrap","qty":2,"price":11.50},{"name":"Lemonade","qty":2,"price":4.50}] },
+    { "id": "FDEZ-9027", "customer": "James Lee",    "status": "Accepted",  "time": "5 min ago",  "notes": "Table 3", "items": [{"name":"Pasta Carbonara","qty":1,"price":15.00},{"name":"Garlic Bread","qty":1,"price":4.00}] },
+    { "id": "FDEZ-9028", "customer": "Olivia Chen",  "status": "Preparing", "time": "12 min ago", "notes": "Table 5", "items": [{"name":"Sushi Platter","qty":1,"price":32.00},{"name":"Miso Soup","qty":1,"price":5.00}] }
+  ],
+  "settings": {
+    "restaurantName": "Foodiez Restaurant",
+    "phone": "+1 (555) 123-4567",
+    "address": "123 Main Street, Food City, FC 10001",
+    "openTime": "08:00",
+    "closeTime": "22:00",
+    "managerName": "Chef Julian",
+    "managerEmail": "julian@foodiez.com",
+    "notifications": {
+      "newOrder": true,
+      "statusUpdates": true,
+      "dailySummary": false,
+      "lowStock": true
+    }
+  }
+}
