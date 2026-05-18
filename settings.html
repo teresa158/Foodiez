@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Foodiez - Settings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .sidebar-active { background: #fff3ec; color: #f97316; border-right: 3px solid #f97316; }
+    input[type="time"]::-webkit-calendar-picker-indicator { opacity: 0.4; cursor: pointer; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex">
+
+  <!-- Sidebar -->
+  <aside class="w-48 bg-white border-r border-gray-100 flex flex-col min-h-screen fixed top-0 left-0 z-10">
+    <!-- Logo -->
+    <div class="flex items-center gap-2 px-4 py-5 border-b border-gray-100">
+      <div class="w-9 h-9 bg-orange-500 rounded-lg flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2" />
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+      <div>
+        <div class="text-sm font-bold text-gray-800 leading-none">Foodiez</div>
+        <div class="text-[10px] text-gray-400 uppercase tracking-wider">Restaurant Admin</div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 py-4 space-y-0.5 px-2">
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-50 text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-50 text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Orders
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-50 text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        New Order
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-50 text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h10"/></svg>
+        Menu
+      </a>
+      <a href="#" class="sidebar-active flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <!-- Bottom user -->
+    <div class="px-4 py-4 border-t border-gray-100 flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-xs">CJ</div>
+      <div>
+        <div class="text-xs font-semibold text-gray-700">Chef Julian</div>
+        <div class="text-[10px] text-gray-400">Store Manager</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="ml-48 flex-1 flex flex-col min-h-screen">
+    <!-- Top bar -->
+    <header class="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 sticky top-0 z-10">
+      <div class="flex-1 relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/></svg>
+        <input type="text" placeholder="Search orders, customers..." class="w-72 pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"/>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="relative p-2 text-gray-400 hover:text-gray-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-xs">CJ</div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="p-6 flex-1">
+      <div class="mb-5">
+        <h1 class="text-xl font-bold text-gray-800">Settings</h1>
+        <p class="text-sm text-gray-400 mt-0.5">Manage your restaurant profile and preferences.</p>
+      </div>
+
+      <div class="flex gap-5 items-start">
+        <!-- Left column -->
+        <div class="flex-1 space-y-5">
+
+          <!-- Restaurant Info -->
+          <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+            <h2 class="text-sm font-semibold text-gray-700 mb-4">Restaurant Information</h2>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-[11px] uppercase tracking-wider text-gray-400 font-medium mb-1">Restaurant Name</label>
+                <input id="restaurantName" type="text" value="Foodiez Restaurant"
+                  class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"/>
+              </div>
+              <div>
+                <label class="block text-[11px] uppercase tracking-wider text-gray-400 font-medium mb-1">Phone Number</label>
+                <input id="phone" type="text" value="+1 (555) 123-4567"
+                  class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"/>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="block text-[11px] uppercase tracking-wider text-gray-400 font-medium mb-1">Address</label>
+              <input id="address" type="text" value="123 Main Street, Food City, FC 10001"
+                class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"/>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-5">
+              <div>
+                <label class="block text-[11px] uppercase tracking-wider text-gray-400 font-medium mb-1">Opening Time</label>
+                <input id="openTime" type="time" value="08:00"
+                  class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"/>
+              </div>
+              <div>
+                <label class="block text-[11px] uppercase tracking-wider text-gray-400 font-medium mb-1">Closing Time</label>
+                <input id="closeTime" type="time" value="22:00"
+                  class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"/>
+              </div>
+            </div>
+            <button onclick="saveRestaurantInfo()"
+              class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors">
+              Save Changes
+            </button>
+            <span id="saveMsg" class="ml-3 text-sm text-green-500 hidden">✓ Saved!</span>
+          </div>
+
+          <!-- Notification Preferences -->
+          <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+            <h2 class="text-sm font-semibold text-gray-700 mb-4">Notification Preferences</h2>
+            <div class="space-y-4">
+              <label class="flex items-center justify-between cursor-pointer">
+                <span class="text-sm text-gray-600">New Order Alerts</span>
+                <input type="checkbox" checked id="notif1" class="sr-only peer" onchange="saveNotif()"/>
+                <div class="relative w-10 h-5 bg-gray-200 peer-checked:bg-orange-500 rounded-full transition-colors peer-focus:ring-2 peer-focus:ring-orange-200">
+                  <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5 duration-200" id="t1"></div>
+                </div>
+              </label>
+              <label class="flex items-center justify-between cursor-pointer">
+                <span class="text-sm text-gray-600">Order Status Updates</span>
+                <input type="checkbox" checked id="notif2" class="sr-only peer" onchange="saveNotif()"/>
+                <div class="relative w-10 h-5 bg-gray-200 peer-checked:bg-orange-500 rounded-full transition-colors peer-focus:ring-2 peer-focus:ring-orange-200">
+                  <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5 duration-200" id="t2"></div>
+                </div>
+              </label>
+              <label class="flex items-center justify-between cursor-pointer">
+                <span class="text-sm text-gray-600">Daily Summary Reports</span>
+                <input type="checkbox" id="notif3" class="sr-only peer" onchange="saveNotif()"/>
+                <div class="relative w-10 h-5 bg-gray-200 peer-checked:bg-orange-500 rounded-full transition-colors peer-focus:ring-2 peer-focus:ring-orange-200">
+                  <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5 duration-200" id="t3"></div>
+                </div>
+              </label>
+              <label class="flex items-center justify-between cursor-pointer">
+                <span class="text-sm text-gray-600">Low Stock Alerts</span>
+                <input type="checkbox" checked id="notif4" class="sr-only peer" onchange="saveNotif()"/>
+                <div class="relative w-10 h-5 bg-gray-200 peer-checked:bg-orange-500 rounded-full transition-colors peer-focus:ring-2 peer-focus:ring-orange-200">
+                  <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5 duration-200" id="t4"></div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right column: Manager Profile -->
+        <div class="w-56">
+          <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+            <h2 class="text-sm font-semibold text-gray-700 mb-4">Manager Profile</h2>
+            <div class="flex flex-col items-center mb-4">
+              <div class="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-xl mb-2" id="avatarCircle">CJ</div>
+              <div class="text-sm font-semibold text-gray-800" id="displayName">Chef Julian</div>
+              <div class="text-xs text-gray-400">Store Manager</div>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-[11px] uppercase tracking-wider text-gray-400 font-medium mb-1">Full Name</label>
+                <input id="managerName" type="text" value="Chef Julian"
+                  class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"/>
+              </div>
+              <div>
+                <label class="block text-[11px] uppercase tracking-wider text-gray-400 font-medium mb-1">Email</label>
+                <input id="managerEmail" type="email" value="julian@foodiez.com"
+                  class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"/>
+              </div>
+              <button onclick="updateProfile()"
+                class="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold py-2 rounded-lg transition-colors mt-1">
+                Update Profile
+              </button>
+              <span id="profileMsg" class="block text-center text-sm text-green-500 hidden">✓ Updated!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- api.js logic -->
+  <script>
+    // Simulated local JSON data store (acts like a REST API)
+    const api = {
+      data: {
+        restaurant: {
+          name: "Foodiez Restaurant",
+          phone: "+1 (555) 123-4567",
+          address: "123 Main Street, Food City, FC 10001",
+          openTime: "08:00",
+          closeTime: "22:00"
+        },
+        notifications: {
+          newOrderAlerts: true,
+          orderStatusUpdates: true,
+          dailySummaryReports: false,
+          lowStockAlerts: true
+        },
+        manager: {
+          name: "Chef Julian",
+          email: "julian@foodiez.com"
+        }
+      },
+
+      get(endpoint) {
+        return new Promise(resolve => {
+          setTimeout(() => resolve({ ok: true, data: this.data[endpoint] }), 100);
+        });
+      },
+
+      put(endpoint, payload) {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            this.data[endpoint] = { ...this.data[endpoint], ...payload };
+            resolve({ ok: true, data: this.data[endpoint] });
+          }, 150);
+        });
+      }
+    };
+
+    // Toggle helper for custom toggles
+    function syncToggles() {
+      const ids = ['notif1','notif2','notif3','notif4'];
+      ids.forEach((id, i) => {
+        const cb = document.getElementById(id);
+        const thumb = document.getElementById('t' + (i+1));
+        const track = thumb.parentElement;
+        if (cb.checked) {
+          track.classList.add('bg-orange-500');
+          track.classList.remove('bg-gray-200');
+          thumb.style.transform = 'translateX(20px)';
+        } else {
+          track.classList.remove('bg-orange-500');
+          track.classList.add('bg-gray-200');
+          thumb.style.transform = 'translateX(0)';
+        }
+      });
+    }
+
+    // Init toggles on load
+    document.querySelectorAll('.sr-only').forEach(cb => {
+      cb.addEventListener('change', syncToggles);
+    });
+    syncToggles();
+
+    // Save restaurant info
+    async function saveRestaurantInfo() {
+      const payload = {
+        name: document.getElementById('restaurantName').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        openTime: document.getElementById('openTime').value,
+        closeTime: document.getElementById('closeTime').value
+      };
+      const res = await api.put('restaurant', payload);
+      if (res.ok) {
+        const msg = document.getElementById('saveMsg');
+        msg.classList.remove('hidden');
+        setTimeout(() => msg.classList.add('hidden'), 2000);
+      }
+    }
+
+    // Save notifications
+    async function saveNotif() {
+      syncToggles();
+      const payload = {
+        newOrderAlerts: document.getElementById('notif1').checked,
+        orderStatusUpdates: document.getElementById('notif2').checked,
+        dailySummaryReports: document.getElementById('notif3').checked,
+        lowStockAlerts: document.getElementById('notif4').checked
+      };
+      await api.put('notifications', payload);
+    }
+
+    // Update manager profile
+    async function updateProfile() {
+      const name = document.getElementById('managerName').value;
+      const email = document.getElementById('managerEmail').value;
+      const payload = { name, email };
+      const res = await api.put('manager', payload);
+      if (res.ok) {
+        // Update display
+        document.getElementById('displayName').textContent = name;
+        const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+        document.getElementById('avatarCircle').textContent = initials;
+        const msg = document.getElementById('profileMsg');
+        msg.classList.remove('hidden');
+        setTimeout(() => msg.classList.add('hidden'), 2000);
+      }
+    }
+  </script>
+</body>
+</html>
