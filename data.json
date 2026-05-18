@@ -1,0 +1,21 @@
+{
+  "menu": [
+    { "id": "1",  "name": "Grilled Salmon",    "category": "Mains",    "price": 18.99, "available": true, "emoji": "🐟" },
+    { "id": "2",  "name": "Chicken Burger",    "category": "Mains",    "price": 14.50, "available": true, "emoji": "🍔" },
+    { "id": "3",  "name": "Margherita Pizza",  "category": "Mains",    "price": 16.50, "available": true, "emoji": "🍕" },
+    { "id": "4",  "name": "Caesar Salad",      "category": "Starters", "price": 12.00, "available": true, "emoji": "🥗" },
+    { "id": "5",  "name": "Beef Steak",        "category": "Mains",    "price": 28.00, "available": true, "emoji": "🥩" },
+    { "id": "6",  "name": "Pasta Carbonara",   "category": "Mains",    "price": 15.00, "available": true, "emoji": "🍝" },
+    { "id": "7",  "name": "French Fries",      "category": "Starters", "price": 5.99,  "available": true, "emoji": "🍟" },
+    { "id": "8",  "name": "Tiramisu",          "category": "Desserts", "price": 7.50,  "available": true, "emoji": "🎂" },
+    { "id": "9",  "name": "Sparkling Water",   "category": "Drinks",   "price": 3.50,  "available": true, "emoji": "💧" },
+    { "id": "10", "name": "Iced Tea",          "category": "Drinks",   "price": 4.00,  "available": true, "emoji": "🍵" },
+    { "id": "11", "name": "Lemonade",          "category": "Drinks",   "price": 4.50,  "available": true, "emoji": "🍋" },
+    { "id": "12", "name": "Veggie Wrap",       "category": "Starters", "price": 11.50, "available": true, "emoji": "🌯" },
+    { "id": "13", "name": "Sushi Platter",     "category": "Mains",    "price": 32.00, "available": true, "emoji": "🍱" },
+    { "id": "14", "name": "Garlic Bread",      "category": "Starters", "price": 4.00,  "available": true, "emoji": "🥖" },
+    { "id": "15", "name": "Miso Soup",         "category": "Starters", "price": 5.00,  "available": true, "emoji": "🍲" },
+    { "id": "16", "name": "Cheesecake",        "category": "Desserts", "price": 8.50,  "available": true, "emoji": "🍰" }
+  ],
+  "orders": []
+}
